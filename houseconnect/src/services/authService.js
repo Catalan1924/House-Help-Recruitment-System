@@ -1,8 +1,5 @@
 import { supabase } from "../lib/supabase";
 
-/**
- * Register a new user
- */
 export const signUp = async ({ email, password }) => {
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -14,9 +11,6 @@ export const signUp = async ({ email, password }) => {
   return data;
 };
 
-/**
- * Login
- */
 export const signIn = async ({ email, password }) => {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -28,18 +22,13 @@ export const signIn = async ({ email, password }) => {
   return data;
 };
 
-/**
- * Logout
- */
+
 export const signOut = async () => {
   const { error } = await supabase.auth.signOut();
 
   if (error) throw error;
 };
 
-/**
- * Current User
- */
 export const getCurrentUser = async () => {
   const {
     data: { user },
@@ -51,9 +40,7 @@ export const getCurrentUser = async () => {
   return user;
 };
 
-/**
- * Current Session
- */
+
 export const getSession = async () => {
   const {
     data: { session },

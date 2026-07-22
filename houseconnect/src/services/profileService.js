@@ -1,8 +1,5 @@
 import { supabase } from "../lib/supabase";
 
-/**
- * Create base profile
- */
 export const createProfile = async (user, form) => {
   const { error } = await supabase
     .from("profiles")
@@ -20,9 +17,6 @@ export const createProfile = async (user, form) => {
   if (error) throw error;
 };
 
-/**
- * Create worker profile
- */
 export const createWorkerProfile = async (userId) => {
   const { error } = await supabase
     .from("house_help_profiles")
@@ -40,9 +34,6 @@ export const createWorkerProfile = async (userId) => {
   if (error) throw error;
 };
 
-/**
- * Create employer profile
- */
 export const createEmployerProfile = async (userId) => {
   const { error } = await supabase
     .from("employer_profiles")

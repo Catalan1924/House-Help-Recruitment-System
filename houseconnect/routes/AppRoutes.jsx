@@ -26,7 +26,6 @@ const AppRoutes = () => {
         element={<ForgotPassword />}
       />
 
-      {/* Dashboards */}
 
       {WorkerRoutes()}
 
