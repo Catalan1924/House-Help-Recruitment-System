@@ -1,134 +1,153 @@
-const SalaryBenefits=({
+import { useMemo } from "react";
 
-nextStep,
+const SalaryBenefits = ({
+  jobData,
+  updateJobField,
+  nextStep,
+  previousStep,
+}) => {
+  const isValid = useMemo(() => {
+    if (jobData.salary === "") return false;
 
-previousStep
+    const salary = Number(jobData.salary);
 
-})=>{
+    return !Number.isNaN(salary) && salary >= 0;
+  }, [jobData.salary]);
 
-return(
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
 
-<div className="bg-white rounded-2xl shadow p-8">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900">
+          Salary & Benefits
+        </h2>
 
-<h2 className="text-3xl font-bold">
+        <p className="text-gray-500 mt-2">
+          Specify the monthly salary and benefits offered for this position.
+        </p>
+      </div>
 
-Salary & Benefits
+      <div className="space-y-8">
 
-</h2>
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Monthly Salary (KES)
+          </label>
 
-<div className="grid md:grid-cols-2 gap-6 mt-8">
+          <input
+            type="number"
+            min="0"
+            step="1000"
+            value={jobData.salary}
+            onChange={(e) =>
+              updateJobField("salary", e.target.value)
+            }
+            placeholder="e.g. 25000"
+            className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+        </div>
 
-<input
-placeholder="Salary"
-className="border rounded-xl p-4"
-/>
+        <div>
 
-<select
-className="border rounded-xl p-4"
->
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Benefits
+          </h3>
 
-<option>
+          <div className="space-y-4">
 
-Accommodation
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={jobData.accommodation}
+                onChange={(e) =>
+                  updateJobField(
+                    "accommodation",
+                    e.target.checked
+                  )
+                }
+                className="h-5 w-5 rounded border-gray-300 text-green-700 focus:ring-green-600"
+              />
 
-</option>
+              <span className="text-gray-700">
+                Accommodation Provided
+              </span>
+            </label>
 
-<option>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={jobData.meals}
+                onChange={(e) =>
+                  updateJobField(
+                    "meals",
+                    e.target.checked
+                  )
+                }
+                className="h-5 w-5 rounded border-gray-300 text-green-700 focus:ring-green-600"
+              />
 
-Provided
+              <span className="text-gray-700">
+                Meals Provided
+              </span>
+            </label>
 
-</option>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={jobData.transport}
+                onChange={(e) =>
+                  updateJobField(
+                    "transport",
+                    e.target.checked
+                  )
+                }
+                className="h-5 w-5 rounded border-gray-300 text-green-700 focus:ring-green-600"
+              />
 
-<option>
+              <span className="text-gray-700">
+                Transport Provided
+              </span>
+            </label>
 
-Not Provided
+          </div>
 
-</option>
+        </div>
 
-</select>
+      </div>
 
-<select
-className="border rounded-xl p-4"
->
+      {!isValid && (
+        <p className="mt-6 text-sm text-red-600">
+          Please enter a valid monthly salary.
+        </p>
+      )}
 
-<option>
+      <div className="flex justify-between mt-10">
 
-Meals
+        <button
+          type="button"
+          onClick={previousStep}
+          className="px-8 py-3 rounded-xl border border-gray-300 hover:bg-gray-50 transition"
+        >
+          Back
+        </button>
 
-</option>
+        <button
+          type="button"
+          onClick={nextStep}
+          disabled={!isValid}
+          className={`px-8 py-3 rounded-xl font-medium transition ${
+            isValid
+              ? "bg-green-700 hover:bg-green-800 text-white"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          Continue
+        </button>
 
-<option>
+      </div>
 
-Included
-
-</option>
-
-<option>
-
-Not Included
-
-</option>
-
-</select>
-
-<select
-className="border rounded-xl p-4"
->
-
-<option>
-
-Transport
-
-</option>
-
-<option>
-
-Included
-
-</option>
-
-<option>
-
-Not Included
-
-</option>
-
-</select>
-
-</div>
-
-<div className="flex justify-between mt-10">
-
-<button
-
-onClick={previousStep}
-
-className="border px-8 py-3 rounded-xl"
-
->
-
-Back
-
-</button>
-
-<button
-
-onClick={nextStep}
-
-className="bg-green-700 text-white px-8 py-3 rounded-xl"
-
->
-
-Continue
-
-</button>
-
-</div>
-
-</div>
-
-)
-
-}
+    </div>
+  );
+};
 
 export default SalaryBenefits;

@@ -1,11 +1,11 @@
 import { Route } from "react-router-dom";
 
-import AdminLayout from "../src/layouts/DashboardLayout";
+import AdminLayout from "../layouts/DashboardLayout";
 
-import AuthGuard from "../src/components/AuthGuard";
-import RoleGuard from "../src/components/RoleGuard";
+import AuthGuard from "../components/AuthGuard";
+import RoleGuard from "../components/RoleGuard";
 
-import Dashboard from "../src/pages/Admin/Dashboard";
+import Dashboard from "../pages/admin/Dashboard";
 
 const AdminRoutes = () => (
   <Route

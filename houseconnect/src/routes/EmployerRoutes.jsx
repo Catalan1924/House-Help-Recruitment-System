@@ -1,13 +1,13 @@
 import { Route } from "react-router-dom";
 
-import EmployerLayout from "../src/layouts/DashboardLayout";
+import EmployerLayout from "../layouts/DashboardLayout";
 
-import AuthGuard from "../src/components/AuthGuard";
-import RoleGuard from "../src/components/RoleGuard";
+import AuthGuard from "../components/AuthGuard";
+import RoleGuard from "../components/RoleGuard";
 
-import Dashboard from "../src/pages/Employer/Dashboard";
-import PostJob from "../src/pages/Employer/PostJob";
-import FindWorkers from "../src/pages/Employer/FindWorkers";
+import Dashboard from "../pages/employer/Dashboard";
+import PostJob from "../pages/employer/PostJob";
+import FindWorkers from "../pages/employer/FindWorkers";
 
 const EmployerRoutes = () => (
   <Route

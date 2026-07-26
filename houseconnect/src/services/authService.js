@@ -1,66 +1,122 @@
 import { supabase } from "../lib/supabase";
 
-/**
- * Register a new user
- */
-export const signUp = async ({ email, password }) => {
+/*
+=========================================
+SIGN UP
+=========================================
+*/
+
+export async function signUp({
+  email,
+  password,
+}) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
   });
 
-  if (error) throw error;
+  if (error) {
+    throw error;
+  }
 
   return data;
-};
+}
 
-/**
- * Login
- */
-export const signIn = async ({ email, password }) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+/*
+=========================================
+SIGN IN
+=========================================
+*/
 
-  if (error) throw error;
+export async function signIn({
+  email,
+  password,
+}) {
+  const { data, error } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+  if (error) {
+    throw error;
+  }
 
   return data;
-};
+}
 
-/**
- * Logout
- */
-export const signOut = async () => {
-  const { error } = await supabase.auth.signOut();
+/*
+=========================================
+SIGN OUT
+=========================================
+*/
 
-  if (error) throw error;
-};
+export async function signOut() {
+  const { error } =
+    await supabase.auth.signOut();
 
-/**
- * Current User
- */
-export const getCurrentUser = async () => {
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+  if (error) {
+    throw error;
+  }
+}
 
-  if (error) throw error;
+/*
+=========================================
+CURRENT SESSION
+=========================================
+*/
 
-  return user;
-};
-
-/**
- * Current Session
- */
-export const getSession = async () => {
+export async function getSession() {
   const {
     data: { session },
     error,
   } = await supabase.auth.getSession();
 
-  if (error) throw error;
+  if (error) {
+    throw error;
+  }
 
   return session;
-};
+}
+
+/*
+=========================================
+CURRENT USER
+=========================================
+*/
+
+export async function getUser() {
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error) {
+    throw error;
+  }
+
+  return user;
+}
+
+/*
+=========================================
+RESET PASSWORD
+=========================================
+*/
+
+export async function resetPassword(email) {
+  const { data, error } =
+    await supabase.auth.resetPasswordForEmail(
+      email,
+      {
+        redirectTo:
+          "http://localhost:5173/reset-password",
+      }
+    );
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}

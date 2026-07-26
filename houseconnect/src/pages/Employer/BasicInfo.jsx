@@ -1,90 +1,218 @@
-const BasicInfo=({nextStep})=>{
+import { useMemo } from "react";
 
-return(
+const counties = [
+  "Baringo",
+  "Bomet",
+  "Bungoma",
+  "Busia",
+  "Elgeyo Marakwet",
+  "Embu",
+  "Garissa",
+  "Homa Bay",
+  "Isiolo",
+  "Kajiado",
+  "Kakamega",
+  "Kericho",
+  "Kiambu",
+  "Kilifi",
+  "Kirinyaga",
+  "Kisii",
+  "Kisumu",
+  "Kitui",
+  "Kwale",
+  "Laikipia",
+  "Lamu",
+  "Machakos",
+  "Makueni",
+  "Mandera",
+  "Marsabit",
+  "Meru",
+  "Migori",
+  "Mombasa",
+  "Murang'a",
+  "Nairobi",
+  "Nakuru",
+  "Nandi",
+  "Narok",
+  "Nyamira",
+  "Nyandarua",
+  "Nyeri",
+  "Samburu",
+  "Siaya",
+  "Taita Taveta",
+  "Tana River",
+  "Tharaka Nithi",
+  "Trans Nzoia",
+  "Turkana",
+  "Uasin Gishu",
+  "Vihiga",
+  "Wajir",
+  "West Pokot",
+];
 
-<div className="bg-white rounded-2xl shadow p-8">
+const employmentTypes = [
+  "Live-in",
+  "Live-out",
+  "Part-time",
+];
 
-<h2 className="text-3xl font-bold">
+const BasicInfo = ({
+  jobData,
+  updateJobField,
+  nextStep,
+}) => {
+  const isValid = useMemo(() => {
+    return (
+      jobData.title.trim() !== "" &&
+      jobData.description.trim() !== "" &&
+      jobData.employment_type !== ""
+    );
+  }, [jobData]);
 
-Basic Information
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
 
-</h2>
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900">
+          Basic Information
+        </h2>
 
-<div className="grid md:grid-cols-2 gap-6 mt-8">
+        <p className="text-gray-500 mt-2">
+          Tell workers about the position you are hiring for.
+        </p>
+      </div>
 
-<input
-className="border rounded-xl p-4"
-placeholder="Job Title"
-/>
+      <div className="space-y-6">
 
-<select
-className="border rounded-xl p-4"
->
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Job Title
+          </label>
 
-<option>
+          <input
+            type="text"
+            value={jobData.title}
+            onChange={(e) =>
+              updateJobField("title", e.target.value)
+            }
+            placeholder="e.g. Live-in House Helper"
+            className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+        </div>
 
-Job Type
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Job Description
+          </label>
 
-</option>
+          <textarea
+            rows={6}
+            value={jobData.description}
+            onChange={(e) =>
+              updateJobField(
+                "description",
+                e.target.value
+              )
+            }
+            placeholder="Describe duties, schedule, expectations and responsibilities."
+            className="w-full rounded-xl border border-gray-300 p-4 resize-none focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+        </div>
 
-<option>
+        <div className="grid md:grid-cols-2 gap-6">
 
-Live-in
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Employment Type
+            </label>
 
-</option>
+            <select
+              value={jobData.employment_type}
+              onChange={(e) =>
+                updateJobField(
+                  "employment_type",
+                  e.target.value
+                )
+              }
+              className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+            >
+              <option value="">
+                Select employment type
+              </option>
 
-<option>
+              {employmentTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
 
-Live-out
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              County
+            </label>
 
-</option>
+            <select
+              value={jobData.county}
+              onChange={(e) =>
+                updateJobField("county", e.target.value)
+              }
+              className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+            >
+              <option value="">
+                Select County
+              </option>
 
-<option>
+              {counties.map((county) => (
+                <option key={county} value={county}>
+                  {county}
+                </option>
+              ))}
+            </select>
+          </div>
 
-Part-time
+        </div>
 
-</option>
+        <div>
 
-</select>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Town
+          </label>
 
-<input
-className="border rounded-xl p-4"
-placeholder="County"
-/>
+          <input
+            type="text"
+            value={jobData.town}
+            onChange={(e) =>
+              updateJobField("town", e.target.value)
+            }
+            placeholder="e.g. Westlands"
+            className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
 
-<input
-className="border rounded-xl p-4"
-placeholder="Town"
-/>
+        </div>
 
-</div>
+      </div>
 
-<textarea
+      <div className="flex justify-end mt-10">
 
-rows={6}
+        <button
+          type="button"
+          onClick={nextStep}
+          disabled={!isValid}
+          className={`px-8 py-3 rounded-xl font-medium transition ${
+            isValid
+              ? "bg-green-700 hover:bg-green-800 text-white"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          Continue
+        </button>
 
-placeholder="Job Description"
+      </div>
 
-className="mt-6 w-full border rounded-xl p-5"
-
-/>
-
-<button
-
-onClick={nextStep}
-
-className="mt-8 bg-green-700 text-white px-8 py-3 rounded-xl"
-
->
-
-Continue
-
-</button>
-
-</div>
-
-)
-
-}
+    </div>
+  );
+};
 
 export default BasicInfo;

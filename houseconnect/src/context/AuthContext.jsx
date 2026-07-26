@@ -1,80 +1,129 @@
 import {
-    createContext,
-    useContext,
-    useEffect,
-    useState
+  createContext,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
 
 import { supabase } from "../lib/supabase";
 
+import {
+  getCurrentUserProfile,
+} from "../services/userService";
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
 
-    const [user,setUser]=useState(null);
+  const [profile, setProfile] = useState(null);
 
-    const [loading,setLoading]=useState(true);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(()=>{
+  /*
+  =========================================
+  LOAD USER
+  =========================================
+  */
 
-        const loadUser=async()=>{
+  useEffect(() => {
+    async function loadSession() {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-            const{
+        if (session?.user) {
+          setUser(session.user);
 
-                data:{session}
+          try {
+            const userProfile =
+              await getCurrentUserProfile(
+                session.user.id
+              );
 
-            }=await supabase.auth.getSession();
-
-            setUser(session?.user??null);
-
-            setLoading(false);
-
+            setProfile(userProfile);
+          } catch (err) {
+            console.error(
+              "Profile Load Error:",
+              err
+            );
+          }
         }
+      } finally {
+        setLoading(false);
+      }
+    }
 
-        loadUser();
+    loadSession();
 
-        const{
+    /*
+    =========================================
+    AUTH STATE CHANGES
+    =========================================
+    */
 
-            data:{subscription}
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
+      async (_, session) => {
+        if (session?.user) {
+          setUser(session.user);
 
-        }=
+          try {
+            const userProfile =
+              await getCurrentUserProfile(
+                session.user.id
+              );
 
-        supabase.auth.onAuthStateChange(
+            setProfile(userProfile);
+          } catch (err) {
+            console.error(
+              "Profile Load Error:",
+              err
+            );
 
-            (_,session)=>{
+            setProfile(null);
+          }
+        } else {
+          setUser(null);
+          setProfile(null);
+        }
+      }
+    );
 
-                setUser(session?.user??null);
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
-            }
+  /*
+  =========================================
+  CONTEXT
+  =========================================
+  */
 
-        );
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        profile,
+        loading,
+        setUser,
+        setProfile,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
-        return()=>subscription.unsubscribe();
+/*
+=========================================
+HOOK
+=========================================
+*/
 
-    },[]);
-
-    return(
-
-        <AuthContext.Provider
-
-            value={{
-
-                user,
-
-                loading,
-
-                setUser
-
-            }}
-
-        >
-
-            {children}
-
-        </AuthContext.Provider>
-
-    )
-
-}
-
-export const useAuth=()=>useContext(AuthContext);
+export const useAuth = () => {
+  return useContext(AuthContext);
+};

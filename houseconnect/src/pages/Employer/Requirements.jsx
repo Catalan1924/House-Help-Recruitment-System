@@ -1,96 +1,256 @@
-const Requirements=({
+import { useMemo } from "react";
 
-nextStep,
+const educationLevels = [
+  "Primary",
+  "Secondary",
+  "Certificate",
+  "Diploma",
+  "Bachelor's Degree",
+  "No Preference",
+];
 
-previousStep
+const genderOptions = [
+  "No Preference",
+  "Female",
+  "Male",
+];
 
-})=>{
+const Requirements = ({
+  jobData,
+  updateJobField,
+  updateArrayField,
+  getArrayValue,
+  nextStep,
+  previousStep,
+}) => {
+  const isValid = useMemo(() => {
+    if (jobData.experience_required === "") return false;
 
-return(
+    const experience = Number(jobData.experience_required);
 
-<div className="bg-white rounded-2xl shadow p-8">
+    if (Number.isNaN(experience) || experience < 0) {
+      return false;
+    }
 
-<h2 className="text-3xl font-bold">
+    if (
+      jobData.age_min !== "" &&
+      jobData.age_max !== "" &&
+      Number(jobData.age_min) > Number(jobData.age_max)
+    ) {
+      return false;
+    }
 
-Requirements
+    return true;
+  }, [jobData]);
 
-</h2>
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
 
-<div className="grid md:grid-cols-2 gap-6 mt-8">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900">
+          Candidate Requirements
+        </h2>
 
-<input
-className="border rounded-xl p-4"
-placeholder="Minimum Experience"
-/>
+        <p className="text-gray-500 mt-2">
+          Describe the qualifications and preferences for the ideal candidate.
+        </p>
+      </div>
 
-<input
-className="border rounded-xl p-4"
-placeholder="Languages"
-/>
+      <div className="grid md:grid-cols-2 gap-6">
 
-<input
-className="border rounded-xl p-4"
-placeholder="Skills"
-/>
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Minimum Experience (Years)
+          </label>
 
-<select
-className="border rounded-xl p-4"
->
+          <input
+            type="number"
+            min="0"
+            value={jobData.experience_required}
+            onChange={(e) =>
+              updateJobField(
+                "experience_required",
+                e.target.value
+              )
+            }
+            className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+        </div>
 
-<option>
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Education
+          </label>
 
-Education
+          <select
+            value={jobData.education}
+            onChange={(e) =>
+              updateJobField("education", e.target.value)
+            }
+            className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+          >
+            <option value="">
+              Select Education
+            </option>
 
-</option>
+            {educationLevels.map((level) => (
+              <option key={level} value={level}>
+                {level}
+              </option>
+            ))}
+          </select>
+        </div>
 
-<option>
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Skills
+          </label>
 
-Primary
+          <input
+            type="text"
+            value={getArrayValue("skills")}
+            onChange={(e) =>
+              updateArrayField("skills", e.target.value)
+            }
+            placeholder="Cooking, Laundry, Cleaning"
+            className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
 
-</option>
+          <p className="text-xs text-gray-500 mt-2">
+            Separate each skill with a comma.
+          </p>
+        </div>
 
-<option>
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Languages
+          </label>
 
-Secondary
+          <input
+            type="text"
+            value={getArrayValue("languages")}
+            onChange={(e) =>
+              updateArrayField(
+                "languages",
+                e.target.value
+              )
+            }
+            placeholder="English, Swahili"
+            className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
 
-</option>
+          <p className="text-xs text-gray-500 mt-2">
+            Separate each language with a comma.
+          </p>
+        </div>
 
-</select>
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Gender Preference
+          </label>
 
-</div>
+          <select
+            value={jobData.gender_preference}
+            onChange={(e) =>
+              updateJobField(
+                "gender_preference",
+                e.target.value
+              )
+            }
+            className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+          >
+            <option value="">
+              Select Preference
+            </option>
 
-<div className="flex justify-between mt-10">
+            {genderOptions.map((option) => (
+              <option
+                key={option}
+                value={option}
+              >
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
 
-<button
+        <div className="grid grid-cols-2 gap-4">
 
-onClick={previousStep}
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Minimum Age
+            </label>
 
-className="border px-8 py-3 rounded-xl"
+            <input
+              type="number"
+              min="18"
+              value={jobData.age_min}
+              onChange={(e) =>
+                updateJobField(
+                  "age_min",
+                  e.target.value
+                )
+              }
+              className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+            />
+          </div>
 
->
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Maximum Age
+            </label>
 
-Back
+            <input
+              type="number"
+              min="18"
+              value={jobData.age_max}
+              onChange={(e) =>
+                updateJobField(
+                  "age_max",
+                  e.target.value
+                )
+              }
+              className="w-full rounded-xl border border-gray-300 p-4 focus:outline-none focus:ring-2 focus:ring-green-600"
+            />
+          </div>
 
-</button>
+        </div>
 
-<button
+      </div>
 
-onClick={nextStep}
+      {!isValid && (
+        <p className="mt-6 text-sm text-red-600">
+          Please enter valid experience and ensure the age range is valid.
+        </p>
+      )}
 
-className="bg-green-700 text-white px-8 py-3 rounded-xl"
+      <div className="flex justify-between mt-10">
 
->
+        <button
+          type="button"
+          onClick={previousStep}
+          className="px-8 py-3 rounded-xl border border-gray-300 hover:bg-gray-50 transition"
+        >
+          Back
+        </button>
 
-Continue
+        <button
+          type="button"
+          onClick={nextStep}
+          disabled={!isValid}
+          className={`px-8 py-3 rounded-xl font-medium transition ${
+            isValid
+              ? "bg-green-700 hover:bg-green-800 text-white"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          Continue
+        </button>
 
-</button>
+      </div>
 
-</div>
-
-</div>
-
-)
-
-}
+    </div>
+  );
+};
 
 export default Requirements;
