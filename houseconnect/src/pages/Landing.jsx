@@ -1,11 +1,30 @@
+import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import Features from "../components/Features";
+import HowItWorks from "../components/HowItWorks";
+import FeaturedWorkers from "../components/FeaturedWorkers";
+import FeaturedJobs from "../components/FeaturedJobs";
+import TrustSection from "../components/TrustSection";
+import CTA from "../components/CTA";
+import Testimonials from "../components/Testimonials";
+import FAQ from "../components/FAQ";
+import Footer from "../components/Footer";
+
 const Landing = () => {
   return (
-    <div className="mx-auto max-w-5xl px-6 py-20">
-      <h1 className="text-4xl font-bold tracking-tight">House Help Recruitment System</h1>
-      <p className="mt-4 text-lg text-slate-600">
-        Connect employers with trusted workers through a simple, secure platform.
-      </p>
-    </div>
+    <>
+      <Navbar />
+      <Hero />
+      <Features />
+      <HowItWorks />
+      <FeaturedWorkers />
+      <FeaturedJobs />
+      <TrustSection />
+      <CTA />
+      <Testimonials />
+      <FAQ />
+      <Footer />
+    </>
   );
 };
 

@@ -5,11 +5,11 @@ export const createProfile = async (user, form) => {
     .from("profiles")
     .insert({
       id: user.id,
-      full_name: form.fullName,
+      full_name: form.full_name || form.fullName,
       email: user.email,
       phone: form.phone,
       county: form.county,
-      town: form.town,
+      town: form.town || null,
       role: form.role,
       status: "pending",
     });
@@ -17,30 +17,32 @@ export const createProfile = async (user, form) => {
   if (error) throw error;
 };
 
-export const createWorkerProfile = async (userId) => {
+export const createWorkerProfile = async (userId, data = {}) => {
   const { error } = await supabase
     .from("house_help_profiles")
     .insert({
       user_id: userId,
-      bio: "",
-      experience: 0,
-      expected_salary: 0,
+      bio: data.bio || "",
+      experience: data.experience_years || 0,
+      expected_salary: data.expected_salary || 0,
       availability: "Available",
-      preferred_job_type: "",
-      skills: [],
-      languages: [],
+      preferred_job_type: data.preferred_job_type || "",
+      skills: data.skills || [],
+      languages: data.languages || [],
+      county: data.county || "",
     });
 
   if (error) throw error;
 };
 
-export const createEmployerProfile = async (userId) => {
+export const createEmployerProfile = async (userId, data = {}) => {
   const { error } = await supabase
     .from("employer_profiles")
     .insert({
       user_id: userId,
-      company_name: "",
-      address: "",
+      company_name: data.company_name || "",
+      address: data.address || "",
+      county: data.county || "",
       verified: false,
     });
 

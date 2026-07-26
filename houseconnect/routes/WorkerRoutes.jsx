@@ -11,6 +11,9 @@ import JobDetails from "../src/pages/worker/JobDetails";
 import Applications from "../src/pages/worker/Applications";
 import Messages from "../src/pages/worker/Messages";
 import Profile from "../src/pages/worker/Profile";
+import ApplyJob from "../src/pages/worker/ApplyJob";
+import Emergency from "../src/pages/worker/Emergency";
+import Settings from "../src/pages/worker/Settings";
 
 const WorkerRoutes = () => (
   <Route
@@ -27,9 +30,12 @@ const WorkerRoutes = () => (
     <Route path="dashboard" element={<Dashboard />} />
     <Route path="jobs" element={<Jobs />} />
     <Route path="jobs/:id" element={<JobDetails />} />
+    <Route path="jobs/:id/apply" element={<ApplyJob />} />
     <Route path="applications" element={<Applications />} />
     <Route path="messages" element={<Messages />} />
     <Route path="profile" element={<Profile />} />
+    <Route path="emergency" element={<Emergency />} />
+    <Route path="settings" element={<Settings />} />
   </Route>
 );
 

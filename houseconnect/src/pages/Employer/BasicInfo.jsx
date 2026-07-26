@@ -1,90 +1,64 @@
-const BasicInfo=({nextStep})=>{
+const BasicInfo = ({ nextStep, data, updateData }) => {
+  const handleChange = (e) => {
+    updateData({ [e.target.name]: e.target.value });
+  };
 
-return(
+  return (
+    <div className="bg-white rounded-2xl shadow p-8">
+      <h2 className="text-3xl font-bold">Basic Information</h2>
 
-<div className="bg-white rounded-2xl shadow p-8">
+      <div className="grid md:grid-cols-2 gap-6 mt-8">
+        <input
+          name="title"
+          className="border rounded-xl p-4"
+          placeholder="Job Title"
+          value={data.title}
+          onChange={handleChange}
+        />
 
-<h2 className="text-3xl font-bold">
+        <select
+          name="employment_type"
+          className="border rounded-xl p-4"
+          value={data.employment_type}
+          onChange={handleChange}
+        >
+          <option value="live-in">Live-in</option>
+          <option value="live-out">Live-out</option>
+          <option value="part-time">Part-time</option>
+          <option value="full-time">Full-time</option>
+        </select>
 
-Basic Information
+        <input
+          name="county"
+          className="border rounded-xl p-4"
+          placeholder="County"
+          value={data.county}
+          onChange={handleChange}
+        />
 
-</h2>
+        <input
+          name="town"
+          className="border rounded-xl p-4"
+          placeholder="Town"
+          value={data.town}
+          onChange={handleChange}
+        />
+      </div>
 
-<div className="grid md:grid-cols-2 gap-6 mt-8">
+      <textarea
+        name="description"
+        rows={6}
+        placeholder="Job Description"
+        className="mt-6 w-full border rounded-xl p-5 resize-y"
+        value={data.description}
+        onChange={handleChange}
+      />
 
-<input
-className="border rounded-xl p-4"
-placeholder="Job Title"
-/>
-
-<select
-className="border rounded-xl p-4"
->
-
-<option>
-
-Job Type
-
-</option>
-
-<option>
-
-Live-in
-
-</option>
-
-<option>
-
-Live-out
-
-</option>
-
-<option>
-
-Part-time
-
-</option>
-
-</select>
-
-<input
-className="border rounded-xl p-4"
-placeholder="County"
-/>
-
-<input
-className="border rounded-xl p-4"
-placeholder="Town"
-/>
-
-</div>
-
-<textarea
-
-rows={6}
-
-placeholder="Job Description"
-
-className="mt-6 w-full border rounded-xl p-5"
-
-/>
-
-<button
-
-onClick={nextStep}
-
-className="mt-8 bg-green-700 text-white px-8 py-3 rounded-xl"
-
->
-
-Continue
-
-</button>
-
-</div>
-
-)
-
-}
+      <button onClick={nextStep} className="mt-8 bg-green-700 text-white px-8 py-3 rounded-xl">
+        Continue
+      </button>
+    </div>
+  );
+};
 
 export default BasicInfo;
