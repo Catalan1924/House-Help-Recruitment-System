@@ -14,8 +14,8 @@ const Hero = () => {
   };
 
   return (
-    <section className="bg-gradient-to-br from-green-50 to-white min-h-[90vh] flex items-center relative pb-24">
-      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+    <section className="bg-linear-to-br from-green-50 to-white min-h-[90vh] flex items-center relative pb-24">
+      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center mb-15">
         {/* Left Side */}
         <motion.div
           initial={{ opacity: 0, x: -60 }}
