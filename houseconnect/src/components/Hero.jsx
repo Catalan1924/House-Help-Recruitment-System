@@ -16,7 +16,7 @@ const Hero = () => {
   return (
     <section className="bg-linear-to-br from-green-50 to-white min-h-[90vh] flex items-center relative pb-24">
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center mb-15">
-        {/* Left Side */}
+
         <motion.div
           initial={{ opacity: 0, x: -60 }}
           animate={{ opacity: 1, x: 0 }}
@@ -37,7 +37,6 @@ const Hero = () => {
             employers through a secure and transparent recruitment platform.
           </p>
 
-          {/* Buttons */}
           <div className="flex flex-wrap gap-4 mt-8">
             <button
               onClick={() => navigate("/register")}
@@ -53,7 +52,6 @@ const Hero = () => {
             </button>
           </div>
 
-          {/* Search */}
           <div className="bg-white rounded-2xl shadow-lg mt-10 p-3 flex items-center">
             <Search className="text-gray-400 ml-2" />
             <input
@@ -73,7 +71,6 @@ const Hero = () => {
           </div>
         </motion.div>
 
-        {/* Right Side */}
         <motion.div
           initial={{ opacity: 0, x: 60 }}
           animate={{ opacity: 1, x: 0 }}
@@ -85,7 +82,7 @@ const Hero = () => {
             alt="House Help"
             className="rounded-3xl shadow-2xl"
           />
-          {/* Floating Cards */}
+
           <div className="absolute -top-6 left-0 bg-white rounded-xl shadow-xl p-4 flex gap-3 items-center">
             <ShieldCheck className="text-green-700" />
             <div>
@@ -103,7 +100,7 @@ const Hero = () => {
         </motion.div>
       </div>
 
-      {/* Statistics */}
+
       <div className="absolute bottom-0 left-0 w-full bg-white border-t">
         <div className="max-w-7xl mx-auto py-8 grid grid-cols-2 md:grid-cols-4 text-center">
           <div>

@@ -25,7 +25,7 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        {/* Logo */}
+
         <button onClick={() => goTo("/")} className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-xl bg-green-700 text-white flex items-center justify-center font-bold text-lg">
             HC
@@ -36,7 +36,6 @@ const Navbar = () => {
           </div>
         </button>
 
-        {/* Desktop Navigation */}
         <ul className="hidden md:flex items-center gap-8 font-medium text-gray-700">
           <li>
             <button onClick={() => goTo("/")} className="hover:text-green-700 cursor-pointer flex items-center gap-1">
@@ -70,7 +69,6 @@ const Navbar = () => {
           </li>
         </ul>
 
-        {/* Desktop Buttons */}
         <div className="hidden md:flex gap-4">
           {user ? (
             <>
@@ -105,13 +103,11 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
         <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <X /> : <Menu />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden bg-white border-t">
           <ul className="flex flex-col p-6 gap-6">
