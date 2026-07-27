@@ -1,69 +1,87 @@
 import AuthButton from "../AuthButton";
+import { useRegistration } from "../../../context/RegistrationContext";
 
 const UploadDocuments = ({ nextStep, previousStep }) => {
+  const { data, updateData } = useRegistration();
+
+  const handleFile = (field, e) => {
+    const file = e.target.files?.[0] || null;
+    updateData(field, file);
+  };
+
   return (
     <div>
-
-      <h2 className="text-3xl font-bold">
-        Upload Documents
-      </h2>
-
+      <h2 className="text-3xl font-bold">Upload Documents</h2>
       <p className="text-gray-500 mt-2">
         Upload the required verification documents.
       </p>
 
       <div className="space-y-6 mt-8">
-
         <div>
           <label className="block font-medium mb-2">
-            National ID
+            National ID <span className="text-red-500">*</span>
           </label>
-
           <input
             type="file"
-            className="w-full border rounded-xl p-3"
+            accept=".pdf,.jpg,.jpeg,.png"
+            onChange={(e) => handleFile("nationalId", e)}
+            className="w-full border rounded-xl p-3 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-50 file:text-green-700 file:font-medium hover:file:bg-green-100"
           />
+          {data.nationalId && (
+            <p className="text-sm text-green-600 mt-1">
+              ✓ {data.nationalId.name}
+            </p>
+          )}
         </div>
 
         <div>
           <label className="block font-medium mb-2">
-            Certificate of Good Conduct (Optional)
+            Certificate of Good Conduct{" "}
+            <span className="text-gray-400 text-sm">(Optional)</span>
           </label>
-
           <input
             type="file"
-            className="w-full border rounded-xl p-3"
+            accept=".pdf,.jpg,.jpeg,.png"
+            onChange={(e) => handleFile("goodConduct", e)}
+            className="w-full border rounded-xl p-3 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-50 file:text-green-700 file:font-medium hover:file:bg-green-100"
           />
+          {data.goodConduct && (
+            <p className="text-sm text-green-600 mt-1">
+              ✓ {data.goodConduct.name}
+            </p>
+          )}
         </div>
 
         <div>
           <label className="block font-medium mb-2">
-            CV (Optional)
+            CV{" "}
+            <span className="text-gray-400 text-sm">(Optional)</span>
           </label>
-
           <input
             type="file"
-            className="w-full border rounded-xl p-3"
+            accept=".pdf,.doc,.docx"
+            onChange={(e) => handleFile("cv", e)}
+            className="w-full border rounded-xl p-3 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-50 file:text-green-700 file:font-medium hover:file:bg-green-100"
           />
+          {data.cv && (
+            <p className="text-sm text-green-600 mt-1">✓ {data.cv.name}</p>
+          )}
         </div>
-
       </div>
 
       <div className="flex gap-4 mt-8">
-
         <button
+          type="button"
           onClick={previousStep}
-          className="w-full border rounded-xl py-3"
+          className="w-full border rounded-xl py-3 font-medium hover:bg-gray-50 transition"
         >
           Back
         </button>
 
-        <AuthButton onClick={nextStep}>
+        <AuthButton onClick={nextStep} disabled={!data.nationalId}>
           Finish Registration
         </AuthButton>
-
       </div>
-
     </div>
   );
 };

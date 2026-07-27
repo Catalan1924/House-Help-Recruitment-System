@@ -1,8 +1,8 @@
 import {
-  Facebook,
-  Instagram,
-  Linkedin,
-  Twitter,
+  Globe,
+  Camera,
+  Briefcase,
+  Send,
   Mail,
   Phone,
   MapPin,
@@ -130,19 +130,19 @@ const Footer = () => {
             <div className="flex gap-4 mt-8">
 
               <button className="bg-gray-800 p-3 rounded-full hover:bg-green-700 transition">
-                <Facebook size={20} />
+                <Globe size={20} />
               </button>
 
               <button className="bg-gray-800 p-3 rounded-full hover:bg-green-700 transition">
-                <Instagram size={20} />
+                <Camera size={20} />
               </button>
 
               <button className="bg-gray-800 p-3 rounded-full hover:bg-green-700 transition">
-                <Linkedin size={20} />
+                <Briefcase size={20} />
               </button>
 
               <button className="bg-gray-800 p-3 rounded-full hover:bg-green-700 transition">
-                <Twitter size={20} />
+                <Send size={20} />
               </button>
 
             </div>

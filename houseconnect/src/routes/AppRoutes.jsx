@@ -12,28 +12,22 @@ import AdminRoutes from "./AdminRoutes";
 const AppRoutes = () => {
   return (
     <Routes>
-
       {/* Public */}
-
       <Route path="/" element={<Landing />} />
-
-      <Route path="/login" element={<Login />} />
-
-      <Route path="/register" element={<Register />} />
-
-      <Route
-        path="/forgot-password"
-        element={<ForgotPassword />}
-      />
-
-      {/* Dashboards */}
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+      </Route>
 
       {WorkerRoutes()}
-
       {EmployerRoutes()}
-
       {AdminRoutes()}
 
+      {/* 404 */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

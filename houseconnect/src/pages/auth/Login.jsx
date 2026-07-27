@@ -35,6 +35,8 @@ const Login = () => {
         password: form.password,
       });
 
+      if (!user) throw new Error("Login failed — no user returned");
+
       const user = auth.user;
 
       if (!user) {

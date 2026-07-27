@@ -24,6 +24,11 @@ const EmployerRoutes = () => (
     <Route path="dashboard" element={<Dashboard />} />
     <Route path="post-job" element={<PostJob />} />
     <Route path="find-workers" element={<FindWorkers />} />
+    <Route path="applicants" element={<Applicants />} />
+    <Route path="messages" element={<Messages />} />
+    <Route path="settings" element={<Settings />} />
+    <Route path="payments" element={<Payments />} />
+    <Route path="workers" element={<Workers />} />
   </Route>
 );
 

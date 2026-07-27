@@ -27,9 +27,12 @@ const WorkerRoutes = () => (
     <Route path="dashboard" element={<Dashboard />} />
     <Route path="jobs" element={<Jobs />} />
     <Route path="jobs/:id" element={<JobDetails />} />
+    <Route path="jobs/:id/apply" element={<ApplyJob />} />
     <Route path="applications" element={<Applications />} />
     <Route path="messages" element={<Messages />} />
     <Route path="profile" element={<Profile />} />
+    <Route path="emergency" element={<Emergency />} />
+    <Route path="settings" element={<Settings />} />
   </Route>
 );
 
