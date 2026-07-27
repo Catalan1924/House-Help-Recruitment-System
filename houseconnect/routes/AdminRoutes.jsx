@@ -1,11 +1,21 @@
 import { Route } from "react-router-dom";
 
-import AdminLayout from "../layouts/DashboardLayout";
+import AdminLayout from "../src/layouts/DashboardLayout";
 
-import AuthGuard from "../components/AuthGuard";
-import RoleGuard from "../components/RoleGuard";
+import AuthGuard from "../src/components/AuthGuard";
+import RoleGuard from "../src/components/RoleGuard";
 
-import Dashboard from "../pages/admin/Dashboard";
+import Dashboard from "../src/pages/Admin/Dashboard";
+import AdminUsers from "../src/pages/Admin/Users";
+import Verification from "../src/pages/Admin/Verification";
+import VerificationQueue from "../src/pages/Admin/VerificationQueue";
+import Alerts from "../src/pages/Admin/Alerts";
+import EmergencyAlerts from "../src/pages/Admin/EmergencyAlerts";
+import Reports from "../src/pages/Admin/Reports";
+import PlatformAnalytics from "../src/pages/Admin/PlatformAnalytics";
+import Settings from "../src/pages/Admin/Settings";
+import Feedback from "../src/pages/Admin/Feedback";
+import RecentUsers from "../src/pages/Admin/RecentUsers";
 
 const AdminRoutes = () => (
   <Route

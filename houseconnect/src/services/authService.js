@@ -1,122 +1,53 @@
 import { supabase } from "../lib/supabase";
 
-/*
-=========================================
-SIGN UP
-=========================================
-*/
-
-export async function signUp({
-  email,
-  password,
-}) {
+export const signUp = async ({ email, password }) => {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
   });
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
   return data;
-}
+};
 
-/*
-=========================================
-SIGN IN
-=========================================
-*/
+export const signIn = async ({ email, password }) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-export async function signIn({
-  email,
-  password,
-}) {
-  const { data, error } =
-    await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
   return data;
-}
+};
 
-/*
-=========================================
-SIGN OUT
-=========================================
-*/
 
-export async function signOut() {
-  const { error } =
-    await supabase.auth.signOut();
+export const signOut = async () => {
+  const { error } = await supabase.auth.signOut();
 
-  if (error) {
-    throw error;
-  }
-}
+  if (error) throw error;
+};
 
-/*
-=========================================
-CURRENT SESSION
-=========================================
-*/
-
-export async function getSession() {
-  const {
-    data: { session },
-    error,
-  } = await supabase.auth.getSession();
-
-  if (error) {
-    throw error;
-  }
-
-  return session;
-}
-
-/*
-=========================================
-CURRENT USER
-=========================================
-*/
-
-export async function getUser() {
+export const getCurrentUser = async () => {
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
   return user;
-}
+};
 
-/*
-=========================================
-RESET PASSWORD
-=========================================
-*/
 
-export async function resetPassword(email) {
-  const { data, error } =
-    await supabase.auth.resetPasswordForEmail(
-      email,
-      {
-        redirectTo:
-          "http://localhost:5173/reset-password",
-      }
-    );
+export const getSession = async () => {
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
-  return data;
-}
+  return session;
+};
