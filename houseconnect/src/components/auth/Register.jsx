@@ -19,7 +19,7 @@ const Register = () => {
     <RegistrationProvider>
       <div className="bg-white rounded-2xl shadow-xl shadow-green-900/5 border border-green-100/50 overflow-hidden w-full">
         {/* Card header */}
-        <div className="bg-gradient-to-r from-green-700 to-green-600 px-8 py-8 text-white text-center">
+        <div className="bg-linear-to-r from-green-700 to-green-600 px-8 py-8 text-white text-center">
           <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur">
             <UserPlus size={28} />
           </div>

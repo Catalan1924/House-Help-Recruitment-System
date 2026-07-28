@@ -61,6 +61,8 @@ export const AuthProvider = ({ children }) => {
       password,
     });
     if (error) throw error;
+    // Immediately set the user so guards don't flash redirect
+    setUser(data.user);
     return data;
   }, []);
 
