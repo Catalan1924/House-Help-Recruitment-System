@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabase";
 export const createProfile = async (user, form) => {
   const { error } = await supabase
     .from("profiles")
-    .insert({
+    .upsert({
       id: user.id,
       full_name: form.full_name || form.fullName,
       email: user.email,
@@ -12,7 +12,7 @@ export const createProfile = async (user, form) => {
       town: form.town || null,
       role: form.role,
       status: "pending",
-    });
+    }, { onConflict: 'id' });
 
   if (error) throw error;
 };
@@ -20,7 +20,7 @@ export const createProfile = async (user, form) => {
 export const createWorkerProfile = async (userId, data = {}) => {
   const { error } = await supabase
     .from("house_help_profiles")
-    .insert({
+    .upsert({
       user_id: userId,
       bio: data.bio || "",
       experience: data.experience_years || 0,
@@ -30,7 +30,7 @@ export const createWorkerProfile = async (userId, data = {}) => {
       skills: data.skills || [],
       languages: data.languages || [],
       county: data.county || "",
-    });
+    }, { onConflict: 'user_id' });
 
   if (error) throw error;
 };
@@ -38,13 +38,13 @@ export const createWorkerProfile = async (userId, data = {}) => {
 export const createEmployerProfile = async (userId, data = {}) => {
   const { error } = await supabase
     .from("employer_profiles")
-    .insert({
+    .upsert({
       user_id: userId,
       company_name: data.company_name || "",
       address: data.address || "",
       county: data.county || "",
       verified: false,
-    });
+    }, { onConflict: 'user_id' });
 
   if (error) throw error;
 };

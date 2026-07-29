@@ -1,0 +1,117 @@
+# ============================================================
+# HouseConnect Kenya — Supabase Configuration
+# ============================================================
+# This file configures your local Supabase CLI development setup.
+# Run `supabase init` and `supabase start` for local development.
+# ============================================================
+
+# A string used to distinguish different Supabase projects on the same host.
+# Defaults to the working directory name when running `supabase init`.
+project_id = "houseconnect-kenya"
+
+[api]
+enabled = true
+# Port used by Supabase API for local development.
+port = 54321
+# Schemas exposed through the API. Add private schemas here.
+schemas = ["public", "graphql_public"]
+# Extra schemas to add to the search_path of every request.
+extra_search_path = ["public", "extensions"]
+# Maximum rows returned to PostgREST.
+max_rows = 1000
+
+[api.tls]
+enabled = false
+
+[db]
+# Port used by PostgreSQL database for local development.
+port = 54322
+# Database major version to use.
+major_version = 17
+
+[db.pooler]
+enabled = false
+port = 54329
+pool_mode = "transaction"
+# Max number of client connections.
+default_pool_size = 20
+# Max number of client connections when using Supavisor in transaction mode.
+max_client_conn = 100
+
+[studio]
+enabled = true
+# Port used by Supabase Studio dashboard for local development.
+port = 54323
+
+# Email testing (InBucket)
+[inbucket]
+enabled = true
+# Port used by InBucket for local development.
+port = 54324
+# Port for InBucket SMTP server.
+smtp_port = 54325
+# Port for InBucket POP3 server.
+pop3_port = 54326
+
+[storage]
+enabled = true
+# Maximum file upload size in bytes (5 MB).
+file_size_limit = "5MB"
+
+[storage.image_transformation]
+enabled = false
+
+# Auth configuration
+[auth]
+enabled = true
+# Base URL for auth service.
+site_url = "http://localhost:5173"
+# Additional redirect URLs (comma-separated).
+additional_redirect_urls = ["http://localhost:5173/*"]
+# JWT expiry time in seconds (default 1 hour = 3600).
+jwt_expiry = 3600
+# Enable email confirmations for signups.
+# enable_confirmations = true
+# Minimum password length.
+minimum_password_length = 8
+
+# Email templates (local dev uses InBucket)
+[auth.email]
+enable_signup = true
+double_confirm_changes = false
+# Template paths relative to supabase directory
+# template.invite = "./templates/invite.html"
+# template.confirmation = "./templates/confirmation.html"
+# template.recovery = "./templates/recovery.html"
+
+# SMS (disabled by default, uncomment for production)
+# [auth.sms]
+# enable_signup = false
+# enable_confirmations = false
+# template = "Your HouseConnect verification code: {{ .Token }}"
+
+# Realtime configuration
+[realtime]
+enabled = true
+# Max number of concurrent connections per client.
+# max_concurrent_clients = 200
+
+# Edge Functions
+[edge_runtime]
+enabled = true
+# Configure policy for edge functions.
+policy = "per_worker"
+
+[functions]
+# Map function slugs to file paths
+[functions.emergency-alert]
+enabled = true
+verify_jwt = true
+
+[functions.send-notification]
+enabled = true
+verify_jwt = true
+
+# Analytics (disabled)
+[analytics]
+enabled = false

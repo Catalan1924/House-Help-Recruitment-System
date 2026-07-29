@@ -22,10 +22,16 @@ const Success = () => {
     setErrorMsg("");
 
     try {
-      // 1. Create auth user
+      // 1. Create auth user (pass role + name so the DB trigger gets them)
       const authData = await signUp({
         email: data.email,
         password: data.password,
+        options: {
+          data: {
+            role: data.role,
+            full_name: data.fullName,
+          },
+        },
       });
 
       const user = authData.user;
