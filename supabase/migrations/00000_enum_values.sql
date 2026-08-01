@@ -80,3 +80,15 @@ BEGIN
     BEGIN EXECUTE 'ALTER TYPE user_role ADD VALUE ''admin''';     EXCEPTION WHEN duplicate_object THEN NULL; END;
   END IF;
 END $func$;
+
+-- user_status
+DO $func$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_status') THEN
+    CREATE TYPE user_status AS ENUM ('active', 'suspended', 'deactivated');
+  ELSE
+    BEGIN EXECUTE 'ALTER TYPE user_status ADD VALUE ''active''';       EXCEPTION WHEN duplicate_object THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TYPE user_status ADD VALUE ''suspended''';    EXCEPTION WHEN duplicate_object THEN NULL; END;
+    BEGIN EXECUTE 'ALTER TYPE user_status ADD VALUE ''deactivated''';  EXCEPTION WHEN duplicate_object THEN NULL; END;
+  END IF;
+END $func$;
