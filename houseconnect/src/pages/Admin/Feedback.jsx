@@ -1,4 +1,3 @@
-import DashboardLayout from "../../layouts/DashboardLayout";
 import { Star, MessageSquare, CheckCircle2 } from "lucide-react";
 
 const MOCK_FEEDBACK = [
@@ -11,47 +10,45 @@ const typeColors = { "Bug Report": "bg-red-100 text-red-800", "Feature Request":
 
 const AdminFeedback = () => {
   return (
-    <DashboardLayout>
-      <div>
-        <h1 className="text-3xl font-bold mb-2">User Feedback</h1>
-        <p className="text-gray-500 mb-8">Review and respond to user feedback</p>
+    <div>
+      <h1 className="text-3xl font-bold mb-2">User Feedback</h1>
+      <p className="text-gray-500 mb-8">Review and respond to user feedback</p>
 
-        <div className="space-y-4">
-          {MOCK_FEEDBACK.map((f) => (
-            <div key={f.id} className="bg-white rounded-2xl shadow-sm p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex gap-4">
-                  <div className="p-3 bg-gray-100 rounded-xl">
-                    <MessageSquare className="text-gray-600" size={24} />
+      <div className="space-y-4">
+        {MOCK_FEEDBACK.map((f) => (
+          <div key={f.id} className="bg-white rounded-2xl shadow-sm p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex gap-4">
+                <div className="p-3 bg-gray-100 rounded-xl">
+                  <MessageSquare className="text-gray-600" size={24} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-3">
+                    <h3 className="font-semibold">{f.user}</h3>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${typeColors[f.type]}`}>{f.type}</span>
+                    {f.resolved && <CheckCircle2 size={16} className="text-green-600" />}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <h3 className="font-semibold">{f.user}</h3>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${typeColors[f.type]}`}>{f.type}</span>
-                      {f.resolved && <CheckCircle2 size={16} className="text-green-600" />}
+                  <p className="text-gray-600 mt-2">{f.message}</p>
+                  <div className="flex items-center gap-3 mt-3">
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} size={14} className={i < f.rating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"} />
+                      ))}
                     </div>
-                    <p className="text-gray-600 mt-2">{f.message}</p>
-                    <div className="flex items-center gap-3 mt-3">
-                      <div className="flex gap-0.5">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star key={i} size={14} className={i < f.rating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"} />
-                        ))}
-                      </div>
-                      <span className="text-sm text-gray-400">{f.date}</span>
-                    </div>
+                    <span className="text-sm text-gray-400">{f.date}</span>
                   </div>
                 </div>
-                {!f.resolved && (
-                  <button className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 text-sm font-medium">
-                    Resolve
-                  </button>
-                )}
               </div>
+              {!f.resolved && (
+                <button className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 text-sm font-medium">
+                  Resolve
+                </button>
+              )}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 

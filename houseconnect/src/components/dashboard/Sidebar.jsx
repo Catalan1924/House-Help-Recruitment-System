@@ -68,6 +68,13 @@ const Sidebar = () => {
   const role = userRole || "worker";
   const menu = menuConfig[role] || menuConfig.worker;
 
+  const displayName =
+    user?.user_metadata?.full_name ||
+    user?.email?.split("@")[0] ||
+    "User";
+
+  const avatarUrl = user?.user_metadata?.avatar_url || null;
+
   const handleLogout = async () => {
     await signOut();
     navigate("/", { replace: true });
@@ -121,29 +128,27 @@ const Sidebar = () => {
       {/* User */}
       <div className="border-t p-5">
         <div className="flex items-center gap-3">
-          <img
-            src="https://i.pravatar.cc/100?img=32"
-            alt=""
-            className="w-12 h-12 rounded-full"
-          />
-          {!collapsed && (
-            <div className="min-w-0">
-              <h3 className="font-semibold truncate">
-                {user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User"}
-              </h3>
-              <p className="text-sm text-gray-500">
-                {roleLabels[role] || role}
-              </p>
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt=""
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center font-bold text-lg shrink-0">
+              {displayName.charAt(0).toUpperCase()}
             </div>
           )}
+          {!collapsed && (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-red-600 hover:text-red-700 transition text-sm"
+            >
+              <LogOut size={18} />
+              Logout
+            </button>
+          )}
         </div>
-        <button
-          onClick={handleLogout}
-          className="mt-6 flex items-center gap-3 text-red-600 hover:text-red-700 transition"
-        >
-          <LogOut />
-          {!collapsed && "Logout"}
-        </button>
       </div>
     </aside>
   );
