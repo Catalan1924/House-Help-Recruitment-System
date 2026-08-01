@@ -12,9 +12,10 @@
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name, role)
+  INSERT INTO public.profiles (id, email, full_name, role)
   VALUES (
     NEW.id,
+    NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'full_name', 'New User'),
     COALESCE(NEW.raw_user_meta_data->>'role', 'worker')
   );
@@ -56,34 +57,42 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Apply to all tables with updated_at
+DROP TRIGGER IF EXISTS trg_profiles_updated ON profiles;
 CREATE TRIGGER trg_profiles_updated
   BEFORE UPDATE ON profiles
   FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
+DROP TRIGGER IF EXISTS trg_house_help_updated ON house_help_profiles;
 CREATE TRIGGER trg_house_help_updated
   BEFORE UPDATE ON house_help_profiles
   FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
+DROP TRIGGER IF EXISTS trg_employer_updated ON employer_profiles;
 CREATE TRIGGER trg_employer_updated
   BEFORE UPDATE ON employer_profiles
   FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
+DROP TRIGGER IF EXISTS trg_jobs_updated ON jobs;
 CREATE TRIGGER trg_jobs_updated
   BEFORE UPDATE ON jobs
   FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
+DROP TRIGGER IF EXISTS trg_applications_updated ON applications;
 CREATE TRIGGER trg_applications_updated
   BEFORE UPDATE ON applications
   FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
+DROP TRIGGER IF EXISTS trg_conversations_updated ON conversations;
 CREATE TRIGGER trg_conversations_updated
   BEFORE UPDATE ON conversations
   FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
+DROP TRIGGER IF EXISTS trg_verification_docs_updated ON verification_documents;
 CREATE TRIGGER trg_verification_docs_updated
   BEFORE UPDATE ON verification_documents
   FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
+DROP TRIGGER IF EXISTS trg_payments_updated ON payments;
 CREATE TRIGGER trg_payments_updated
   BEFORE UPDATE ON payments
   FOR EACH ROW EXECUTE FUNCTION update_timestamp();

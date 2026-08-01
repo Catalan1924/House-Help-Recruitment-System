@@ -37,12 +37,19 @@ const Success = () => {
       const user = authData.user;
       if (!user) throw new Error("Registration failed — no user returned");
 
-      // 2. Create base profile
+      // Email confirmation required — session is null, user must verify email
+      if (!authData.session) {
+        setStatus("success");
+        return;
+      }
+
+      // 2. Create base profile (session exists, RLS will pass)
       await createProfile(user, {
         role: data.role,
         full_name: data.fullName,
         phone: data.phone,
         county: data.county,
+        town: data.town || "",
       });
 
       // 3. Create role-specific profile
@@ -55,6 +62,9 @@ const Success = () => {
       } else if (data.role === "employer") {
         await createEmployerProfile(user.id, {
           county: data.county,
+          company_name: data.companyName || "",
+          household_type: data.householdType || "",
+          preferred_gender: data.preferredGender || "",
         });
       }
 
@@ -63,7 +73,14 @@ const Success = () => {
       setStatus("success");
     } catch (err) {
       setStatus("error");
-      setErrorMsg(err.message || "Something went wrong during registration.");
+      // Extract message from various Supabase error shapes
+      const msg =
+        err?.message ||
+        err?.error_description ||
+        err?.msg ||
+        (typeof err === "object" ? JSON.stringify(err) : String(err)) ||
+        "Something went wrong during registration.";
+      setErrorMsg(msg);
     }
   };
 
@@ -76,8 +93,8 @@ const Success = () => {
           Your account has been created successfully.
         </p>
         <p className="text-gray-500 mt-2">
-          Your documents will be reviewed before your profile becomes visible to
-          employers.
+          Please check your email and click the confirmation link to activate
+          your account before logging in.
         </p>
         <button
           onClick={() => {
@@ -137,24 +154,48 @@ const Success = () => {
           <span className="text-gray-500">County</span>
           <span className="font-medium">{data.county || "—"}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-gray-500">Experience</span>
-          <span className="font-medium">
-            {data.experience ? `${data.experience} years` : "—"}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-500">Expected Salary</span>
-          <span className="font-medium">
-            {data.expectedSalary ? `KES ${data.expectedSalary}` : "—"}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-500">National ID</span>
-          <span className="font-medium">
-            {data.nationalId ? data.nationalId.name : "—"}
-          </span>
-        </div>
+
+        {data.role === "worker" ? (
+          <>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Experience</span>
+              <span className="font-medium">
+                {data.experience ? `${data.experience} years` : "—"}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Expected Salary</span>
+              <span className="font-medium">
+                {data.expectedSalary ? `KES ${data.expectedSalary}` : "—"}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">National ID</span>
+              <span className="font-medium">
+                {data.nationalId ? data.nationalId.name : "—"}
+              </span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Town</span>
+              <span className="font-medium">{data.town || "—"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Household</span>
+              <span className="font-medium">{data.householdType || "—"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Pref. Gender</span>
+              <span className="font-medium">{data.preferredGender || "—"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Company</span>
+              <span className="font-medium">{data.companyName || "—"}</span>
+            </div>
+          </>
+        )}
       </div>
 
       <button
