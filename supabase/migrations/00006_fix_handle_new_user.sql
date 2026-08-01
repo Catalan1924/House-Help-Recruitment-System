@@ -12,7 +12,7 @@ BEGIN
     NEW.id,
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'full_name', 'New User'),
-    COALESCE(NEW.raw_user_meta_data->>'role', 'worker')
+    COALESCE(NEW.raw_user_meta_data->>'role', 'worker')::public.user_role
   );
 
   -- If worker, also create house_help_profile placeholder

@@ -17,7 +17,7 @@ BEGIN
     NEW.id,
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'full_name', 'New User'),
-    COALESCE(NEW.raw_user_meta_data->>'role', 'worker')
+    COALESCE(NEW.raw_user_meta_data->>'role', 'worker')::public.user_role
   );
 
   -- If worker, also create house_help_profile placeholder
@@ -265,7 +265,7 @@ BEGIN
   FROM profiles WHERE id = NEW.user_id;
 
   -- Notify all admins
-  FOR admin_record IN SELECT id FROM profiles WHERE role = 'admin' LOOP
+  FOR admin_record IN SELECT id FROM profiles WHERE role = 'admin'::public.user_role LOOP
     INSERT INTO notifications (user_id, title, message, type, metadata)
     VALUES (
       admin_record.id,
@@ -278,7 +278,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 DROP TRIGGER IF EXISTS trg_emergency_notify ON emergency_alerts;
 

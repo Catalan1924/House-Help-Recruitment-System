@@ -21,6 +21,18 @@ ALTER TABLE verification_documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 
 
+-- Helper: read current user's role without triggering RLS
+-- (avoids infinite recursion in policies on "profiles")
+CREATE OR REPLACE FUNCTION public.current_user_role()
+RETURNS public.user_role
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = 'public'
+STABLE
+AS $$
+  SELECT role FROM public.profiles WHERE id = auth.uid();
+$$;
+
 -- ============================================================
 -- 1. PROFILES
 -- ============================================================
@@ -35,9 +47,7 @@ CREATE POLICY "Users can view own profile"
 DROP POLICY IF EXISTS "Admins can view all profiles" ON profiles;
 CREATE POLICY "Admins can view all profiles"
   ON profiles FOR SELECT
-  USING (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  USING (public.current_user_role() = 'admin'::public.user_role);
 
 -- Workers/employers can view profiles of people they interact with
 -- (conversation participants, job posters, etc.) — handled by join policies.
@@ -47,7 +57,7 @@ DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 CREATE POLICY "Users can update own profile"
   ON profiles FOR UPDATE
   USING (auth.uid() = id)
-  WITH CHECK (auth.uid() = id AND role = (SELECT role FROM profiles WHERE id = auth.uid()));
+  WITH CHECK (auth.uid() = id AND role = public.current_user_role());
 
 -- Users can insert their own profile
 DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
@@ -72,17 +82,13 @@ CREATE POLICY "Workers can view own HH profile"
 DROP POLICY IF EXISTS "Employers can view worker profiles" ON house_help_profiles;
 CREATE POLICY "Employers can view worker profiles"
   ON house_help_profiles FOR SELECT
-  USING (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('employer', 'admin')
-  ));
+  USING (public.current_user_role() IN ('employer'::public.user_role, 'admin'::public.user_role));
 
 -- Admins can view all
 DROP POLICY IF EXISTS "Admins can view all HH profiles" ON house_help_profiles;
 CREATE POLICY "Admins can view all HH profiles"
   ON house_help_profiles FOR SELECT
-  USING (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  USING (public.current_user_role() = 'admin'::public.user_role);
 
 -- Workers can update their own HH profile
 DROP POLICY IF EXISTS "Workers can update own HH profile" ON house_help_profiles;
@@ -111,9 +117,7 @@ CREATE POLICY "Employers can view own profile"
 DROP POLICY IF EXISTS "Workers can view employer profiles" ON employer_profiles;
 CREATE POLICY "Workers can view employer profiles"
   ON employer_profiles FOR SELECT
-  USING (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('worker', 'admin')
-  ));
+  USING (public.current_user_role() IN ('worker'::public.user_role, 'admin'::public.user_role));
 
 -- Employer can update own profile
 DROP POLICY IF EXISTS "Employers can update own profile" ON employer_profiles;
@@ -136,9 +140,7 @@ CREATE POLICY "Employers can insert own profile"
 DROP POLICY IF EXISTS "Anyone can view open jobs" ON jobs;
 CREATE POLICY "Anyone can view open jobs"
   ON jobs FOR SELECT
-  USING (status::text = 'open' OR EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  USING (status::text = 'open' OR public.current_user_role() = 'admin'::public.user_role);
 
 -- Employer can read their own jobs (all statuses)
 DROP POLICY IF EXISTS "Employers can view own jobs" ON jobs;
@@ -161,7 +163,7 @@ CREATE POLICY "Employers can create jobs"
   ON jobs FOR INSERT
   WITH CHECK (
     auth.uid() = employer_id
-    AND EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('employer', 'admin'))
+    AND public.current_user_role() IN ('employer'::public.user_role, 'admin'::public.user_role)
   );
 
 -- Employer can update own jobs
@@ -181,9 +183,7 @@ CREATE POLICY "Employers can delete own jobs"
 DROP POLICY IF EXISTS "Admins can manage all jobs" ON jobs;
 CREATE POLICY "Admins can manage all jobs"
   ON jobs FOR ALL
-  USING (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  USING (public.current_user_role() = 'admin'::public.user_role);
 
 
 -- ============================================================
@@ -210,7 +210,7 @@ CREATE POLICY "Workers can create applications"
   ON applications FOR INSERT
   WITH CHECK (
     auth.uid() = worker_id
-    AND EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'worker')
+    AND public.current_user_role() = 'worker'::public.user_role
   );
 
 -- Employer can update application status
@@ -231,9 +231,7 @@ CREATE POLICY "Workers can withdraw own applications"
 DROP POLICY IF EXISTS "Admins can manage all applications" ON applications;
 CREATE POLICY "Admins can manage all applications"
   ON applications FOR ALL
-  USING (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  USING (public.current_user_role() = 'admin'::public.user_role);
 
 
 -- ============================================================
@@ -320,9 +318,7 @@ CREATE POLICY "Users can update own reviews"
 DROP POLICY IF EXISTS "Users can delete own reviews" ON reviews;
 CREATE POLICY "Users can delete own reviews"
   ON reviews FOR DELETE
-  USING (auth.uid() = reviewer_id OR EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  USING (auth.uid() = reviewer_id OR public.current_user_role() = 'admin'::public.user_role);
 
 
 -- ============================================================
@@ -339,9 +335,7 @@ CREATE POLICY "Workers can view own emergency alerts"
 DROP POLICY IF EXISTS "Admins can view all emergency alerts" ON emergency_alerts;
 CREATE POLICY "Admins can view all emergency alerts"
   ON emergency_alerts FOR SELECT
-  USING (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  USING (public.current_user_role() = 'admin'::public.user_role);
 
 -- Workers can create alerts
 DROP POLICY IF EXISTS "Workers can create emergency alerts" ON emergency_alerts;
@@ -349,16 +343,14 @@ CREATE POLICY "Workers can create emergency alerts"
   ON emergency_alerts FOR INSERT
   WITH CHECK (
     auth.uid() = user_id
-    AND EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'worker')
+    AND public.current_user_role() = 'worker'::public.user_role
   );
 
 -- Admins can update alert status
 DROP POLICY IF EXISTS "Admins can update emergency alerts" ON emergency_alerts;
 CREATE POLICY "Admins can update emergency alerts"
   ON emergency_alerts FOR UPDATE
-  USING (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  USING (public.current_user_role() = 'admin'::public.user_role);
 
 
 -- ============================================================
@@ -375,9 +367,7 @@ CREATE POLICY "Users can view own notifications"
 DROP POLICY IF EXISTS "Admins can create notifications" ON notifications;
 CREATE POLICY "Admins can create notifications"
   ON notifications FOR INSERT
-  WITH CHECK (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  WITH CHECK (public.current_user_role() = 'admin'::public.user_role);
 
 -- Users can mark own notifications as read
 DROP POLICY IF EXISTS "Users can update own notifications" ON notifications;
@@ -406,9 +396,7 @@ CREATE POLICY "Users can view own documents"
 DROP POLICY IF EXISTS "Admins can view all documents" ON verification_documents;
 CREATE POLICY "Admins can view all documents"
   ON verification_documents FOR SELECT
-  USING (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  USING (public.current_user_role() = 'admin'::public.user_role);
 
 -- Users can upload documents
 DROP POLICY IF EXISTS "Users can upload documents" ON verification_documents;
@@ -420,9 +408,7 @@ CREATE POLICY "Users can upload documents"
 DROP POLICY IF EXISTS "Admins can review documents" ON verification_documents;
 CREATE POLICY "Admins can review documents"
   ON verification_documents FOR UPDATE
-  USING (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  USING (public.current_user_role() = 'admin'::public.user_role);
 
 
 -- ============================================================
@@ -445,9 +431,7 @@ CREATE POLICY "Workers can view received payments"
 DROP POLICY IF EXISTS "Admins can view all payments" ON payments;
 CREATE POLICY "Admins can view all payments"
   ON payments FOR SELECT
-  USING (EXISTS (
-    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
-  ));
+  USING (public.current_user_role() = 'admin'::public.user_role);
 
 -- Employers can create payments
 DROP POLICY IF EXISTS "Employers can create payments" ON payments;

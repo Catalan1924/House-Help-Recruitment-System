@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   phone           TEXT,
   county          TEXT,
   town            TEXT,
-  role            TEXT NOT NULL CHECK (role IN ('worker', 'employer', 'admin')),
+  role            public.user_role NOT NULL,
   status          TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'suspended', 'deactivated')),
   avatar_url      TEXT,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
