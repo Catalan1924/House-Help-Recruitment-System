@@ -1,3 +1,5 @@
+/*Pulling seven icon components from the lucide-react icon library.
+ Each is a React component that renders an SVG icon*/
 import {
   Globe,
   Camera,
@@ -39,7 +41,7 @@ const Footer = () => {
             </div>
 
             <p className="text-gray-400 leading-7">
-              Connecting trusted employers with verified domestic workers
+              Connecting trusted clients with verified house helps
               through a safe, secure and modern recruitment platform.
             </p>
 
@@ -113,8 +115,7 @@ const Footer = () => {
 
               <div className="flex items-center gap-3">
                 <Phone size={18} />
-                +254 116606848
-                +254 704696930              
+                +254 116 606 848 or +254 704 696 930              
               </div>
 
               <div className="flex items-center gap-3">
@@ -127,19 +128,19 @@ const Footer = () => {
             <div className="flex gap-4 mt-8">
 
               <button className="bg-gray-800 p-3 rounded-full hover:bg-green-700 transition">
-                <Globe size={20} />
+                <Globe size={18} />
               </button>
 
               <button className="bg-gray-800 p-3 rounded-full hover:bg-green-700 transition">
-                <Camera size={20} />
+                <Camera size={18} />
               </button>
 
               <button className="bg-gray-800 p-3 rounded-full hover:bg-green-700 transition">
-                <Briefcase size={20} />
+                <Briefcase size={18} />
               </button>
 
               <button className="bg-gray-800 p-3 rounded-full hover:bg-green-700 transition">
-                <Send size={20} />
+                <Send size={18} />
               </button>
 
             </div>
@@ -155,7 +156,7 @@ const Footer = () => {
           </p>
 
           <p className="mt-4 md:mt-0">
-            Built with ❤️ by Wema & Shem Tech Solutions <span className="text-green-600">HouseConnect Kenya</span>.
+            Built by June & Shem Tech Solutions <span className="text-cyan-600">HouseConnect Kenya</span>.
           </p>
 
         </div>
