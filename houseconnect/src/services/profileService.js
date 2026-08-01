@@ -17,12 +17,13 @@ const mapExperienceToEnum = (years) => {
 export const createProfile = async (user, form) => {
   const payload = {
     id: user.id,
+    email: user.email,                // REQUIRED — production has NOT NULL on this column
     full_name: form.full_name || form.fullName,
     phone: form.phone || null,
     county: form.county || null,
     town: form.town || null,
     role: form.role,
-    status: "active",               // valid CHECK value
+    status: "active",                 // valid CHECK value
   };
 
   const { error } = await supabase

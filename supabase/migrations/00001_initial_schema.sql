@@ -15,9 +15,11 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- Every user (worker, employer, admin) has ONE row here.
 -- role: 'worker' | 'employer' | 'admin'
 -- ------------------------------------------------------------
-DO $$
+DO $
 BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'profiles' AND table_schema = 'public') THEN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND table_schema = 'public' AND column_name = 'email') THEN
+      ALTER TABLE profiles ADD COLUMN email TEXT; END IF;
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND table_schema = 'public' AND column_name = 'avatar_url') THEN
       ALTER TABLE profiles ADD COLUMN avatar_url TEXT; END IF;
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND table_schema = 'public' AND column_name = 'county') THEN
@@ -25,10 +27,11 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND table_schema = 'public' AND column_name = 'town') THEN
       ALTER TABLE profiles ADD COLUMN town TEXT; END IF;
   END IF;
-END $$;
+END $;
 
 CREATE TABLE IF NOT EXISTS profiles (
   id              UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email           TEXT,
   full_name       TEXT NOT NULL,
   phone           TEXT,
   county          TEXT,
