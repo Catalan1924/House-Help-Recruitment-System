@@ -16,6 +16,7 @@ const Footer = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
 
+          {/* Company */}
           <div>
 
             <div className="flex items-center gap-3 mb-5">
