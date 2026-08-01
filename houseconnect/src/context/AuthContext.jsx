@@ -49,8 +49,12 @@ export const AuthProvider = ({ children }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = useCallback(async ({ email, password }) => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+  const signUp = useCallback(async ({ email, password, options = {} }) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options,
+    });
     if (error) throw error;
     return data;
   }, []);
@@ -61,6 +65,8 @@ export const AuthProvider = ({ children }) => {
       password,
     });
     if (error) throw error;
+    // Immediately set the user so guards don't flash redirect
+    setUser(data.user);
     return data;
   }, []);
 
