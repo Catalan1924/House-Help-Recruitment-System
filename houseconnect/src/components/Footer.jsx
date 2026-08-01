@@ -47,7 +47,6 @@ const Footer = () => {
 
           </div>
 
-          {/* Quick Links */}
 
           <div>
 
@@ -91,7 +90,6 @@ const Footer = () => {
 
           </div>
 
-          {/* Support */}
 
           <div>
 
@@ -111,7 +109,6 @@ const Footer = () => {
 
           </div>
 
-          {/* Contact */}
 
           <div>
 
@@ -128,7 +125,8 @@ const Footer = () => {
 
               <div className="flex items-center gap-3">
                 <Phone size={18} />
-                +254 700 000 000
+                +254 116606848
+                +254 704696930              
               </div>
 
               <div className="flex items-center gap-3">
@@ -169,7 +167,7 @@ const Footer = () => {
           </p>
 
           <p className="mt-4 md:mt-0">
-            Built with ❤️ for safer domestic worker recruitment.
+            Built with ❤️ by Wema & Shem Tech Solutions <span className="text-green-600">HouseConnect Kenya</span>.
           </p>
 
         </div>

@@ -18,7 +18,7 @@ const Topbar = () => {
         </h1>
 
         <p className="text-gray-500">
-          Good morning, Mary 👋
+          Good morning, Mary 
         </p>
 
       </div>

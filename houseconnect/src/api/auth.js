@@ -64,9 +64,7 @@ export const getCurrentSession = async () => {
   return session;
 };
 
-/**
- * Get the currently authenticated user.
- */
+
 export const getCurrentUser = async () => {
   const {
     data: { user },

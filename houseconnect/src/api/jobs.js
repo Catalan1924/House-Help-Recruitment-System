@@ -1,8 +1,6 @@
 import { supabase } from "../lib/supabase";
 
-/**
- * Fetch all jobs with optional filters.
- */
+
 export const getJobs = async (filters = {}) => {
   let query = supabase
     .from("jobs")

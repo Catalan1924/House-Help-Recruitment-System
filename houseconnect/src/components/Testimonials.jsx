@@ -6,7 +6,7 @@ const testimonials = [
     name: "Jane Mwangi",
     role: "Employer",
     location: "Nairobi",
-    image: "https://i.pravatar.cc/150?img=32",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQM2fEW7tHjscbYJ_dveIXamXlTZhc2MSSOzjcSk8n66g&s=10",
     review:
       "HouseConnect helped me find a trustworthy house help within three days. The verification process gave me confidence and the experience was smooth from start to finish.",
   },
@@ -15,7 +15,7 @@ const testimonials = [
     name: "Mary Achieng",
     role: "House Help",
     location: "Kisumu",
-    image: "https://i.pravatar.cc/150?img=47",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBBWlluTvwqHvucrKMk0f1tptkiL2AOhIhn7s4FQEegg&s=10",
     review:
       "Instead of walking from house to house looking for work, I created my profile and received job offers directly from employers. This platform changed my life.",
   },
@@ -24,7 +24,7 @@ const testimonials = [
     name: "David Otieno",
     role: "Employer",
     location: "Kiambu",
-    image: "https://i.pravatar.cc/150?img=15",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ309rPTesvujEe5feJ8M1yMvFRl7f-HR2BxP5w639eHw&s=10",
     review:
       "The messaging feature and worker profiles made it easy to compare applicants before hiring. I would definitely recommend HouseConnect.",
   },

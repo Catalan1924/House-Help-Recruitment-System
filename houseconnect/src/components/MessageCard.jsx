@@ -9,7 +9,7 @@ const MessageCard = ({ message, onClick, isActive = false }) => {
       }`}
     >
       <img
-        src={message.avatar || "https://i.pravatar.cc/100?img=32"}
+        src={message.avatar || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9VoZNvZ8hewkBt4XokSQes-BSDk9d74d7dIyZ7mvFqg&s=10"}
         alt=""
         className="w-12 h-12 rounded-full object-cover"
       />
