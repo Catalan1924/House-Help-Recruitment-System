@@ -1,5 +1,9 @@
+
 /*Pulling seven icon components from the lucide-react icon library.
  Each is a React component that renders an SVG icon*/
+
+import { Link } from "react-router-dom";
+
 import {
   Globe,
   Camera,
@@ -18,9 +22,10 @@ const Footer = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
 
+          {/* Company */}
           <div>
 
-            <div className="flex items-center gap-3 mb-5">
+            <Link to="/" className="flex items-center gap-3 mb-5">
 
               <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center text-xl font-bold">
                 HC
@@ -38,7 +43,7 @@ const Footer = () => {
 
               </div>
 
-            </div>
+            </Link>
 
             <p className="text-gray-400 leading-7">
               Connecting trusted clients with verified house helps
@@ -56,24 +61,34 @@ const Footer = () => {
 
             <ul className="space-y-4 text-gray-400">
 
-              <li className="hover:text-white cursor-pointer">
-                Home
+              <li>
+                <Link to="/" className="hover:text-white transition-colors">
+                  Home
+                </Link>
               </li>
 
-              <li className="hover:text-white cursor-pointer">
-                Find Jobs
+              <li>
+                <Link to="/worker/jobs" className="hover:text-white transition-colors">
+                  Find Jobs
+                </Link>
               </li>
 
-              <li className="hover:text-white cursor-pointer">
-                Find House Helps
+              <li>
+                <Link to="/employer/find-workers" className="hover:text-white transition-colors">
+                  Find House Helps
+                </Link>
               </li>
 
-              <li className="hover:text-white cursor-pointer">
-                About
+              <li>
+                <Link to="/about" className="hover:text-white transition-colors">
+                  About
+                </Link>
               </li>
 
-              <li className="hover:text-white cursor-pointer">
-                Contact
+              <li>
+                <Link to="/contact" className="hover:text-white transition-colors">
+                  Contact
+                </Link>
               </li>
 
             </ul>
@@ -89,11 +104,11 @@ const Footer = () => {
 
             <ul className="space-y-4 text-gray-400">
 
-              <li>Help Center</li>
-              <li>Privacy Policy</li>
-              <li>Terms & Conditions</li>
-              <li>FAQs</li>
-              <li>Report a Problem</li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Help Center</Link></li>
+              <li><Link to="/about" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/about" className="hover:text-white transition-colors">Terms & Conditions</Link></li>
+              <li><Link to="/about" className="hover:text-white transition-colors">FAQs</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Report a Problem</Link></li>
 
             </ul>
 

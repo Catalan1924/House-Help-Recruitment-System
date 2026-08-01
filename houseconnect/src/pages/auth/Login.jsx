@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signIn } from "../../services/authService";
+import { useAuth } from "../../context/AuthContext";
 import { getUserRole } from "../../services/userService";
 import AuthInput from "../../components/auth/AuthInput";
 import PasswordInput from "../../components/auth/PasswordInput";
@@ -9,6 +9,7 @@ import { Home, LogIn } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { signIn } = useAuth();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [rememberMe, setRememberMe] = useState(false);
@@ -55,7 +56,9 @@ const Login = () => {
       if (!user) throw new Error("Login failed — no user returned");
 
       const role = await getUserRole(user.id);
+      // This part is the one that gets the role and navigates to the appropriate dashboard based on the role
       navigate(`/${role}/dashboard`, { replace: true });
+      console.log(`User logged in with role: ${role}`);
     } catch (err) {
       const message = err.message || "An unexpected error occurred";
 
@@ -74,7 +77,7 @@ const Login = () => {
   return (
     <div className="bg-white rounded-2xl shadow-xl shadow-green-900/5 border border-green-100/50 overflow-hidden">
       {/* Card header with branding */}
-      <div className="bg-gradient-to-r from-green-700 to-green-600 px-8 py-8 text-white text-center">
+      <div className="bg-linear-to-r from-green-700 to-green-600 px-8 py-8 text-white text-center">
         <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur">
           <LogIn size={28} />
         </div>

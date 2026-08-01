@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import {
   getJobs,
   getJobById,
@@ -42,6 +43,10 @@ export const useCreateJob = () => {
     mutationFn: createJob,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      toast.success("Job posted successfully!");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to post job");
     },
   });
 };
@@ -57,6 +62,10 @@ export const useUpdateJob = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       queryClient.invalidateQueries({ queryKey: ["job", variables.id] });
+      toast.success("Job updated successfully!");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to update job");
     },
   });
 };
@@ -71,6 +80,10 @@ export const useDeleteJob = () => {
     mutationFn: deleteJob,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      toast.success("Job deleted successfully!");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete job");
     },
   });
 };

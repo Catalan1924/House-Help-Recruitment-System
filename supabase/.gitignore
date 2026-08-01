@@ -1,0 +1,6 @@
+# Supabase local development artifacts
+.branches/
+.temp/
+
+# Generated types (re-generate on schema changes)
+# types.ts

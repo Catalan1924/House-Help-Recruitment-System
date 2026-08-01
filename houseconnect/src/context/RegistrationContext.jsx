@@ -11,11 +11,17 @@ export const RegistrationProvider = ({ children }) => {
     password: "",
     // Step 2: SelectRole
     role: "", // "worker" or "employer"
-    // Step 3: ProfileInfo
+    // Step 3: ProfileInfo — common
     county: "",
+    // Worker fields
     experience: "",
     expectedSalary: "",
-    // Step 4: UploadDocuments
+    // Employer fields
+    town: "",
+    householdType: "",
+    preferredGender: "",
+    companyName: "",
+    // Step 4: UploadDocuments (worker-required, employer-optional)
     nationalId: null,
     goodConduct: null,
     cv: null,
@@ -35,6 +41,10 @@ export const RegistrationProvider = ({ children }) => {
       county: "",
       experience: "",
       expectedSalary: "",
+      town: "",
+      householdType: "",
+      preferredGender: "",
+      companyName: "",
       nationalId: null,
       goodConduct: null,
       cv: null,

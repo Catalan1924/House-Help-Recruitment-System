@@ -1,8 +1,11 @@
 import { ArrowRight, UserPlus, Briefcase } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CTA = () => {
+  const navigate = useNavigate();
+
   return (
-    <section className="py-24 bg-gradient-to-r from-green-700 via-green-600 to-green-500 overflow-hidden relative">
+    <section className="py-24 bg-linear-to-r from-green-700 via-green-600 to-green-500 overflow-hidden relative">
 
       {/* Background Decorations */}
       <div className="absolute w-72 h-72 rounded-full bg-white/10 -top-20 -left-20"></div>
@@ -28,7 +31,9 @@ const CTA = () => {
 
         <div className="flex flex-wrap justify-center gap-6 mt-12">
 
-          <button className="bg-white text-green-700 px-8 py-4 rounded-xl font-semibold flex items-center gap-2 hover:scale-105 transition">
+          <button
+            onClick={() => navigate("/register")}
+            className="bg-white text-green-700 px-8 py-4 rounded-xl font-semibold flex items-center gap-2 hover:scale-105 transition">
 
             <Briefcase size={20} />
 
@@ -38,7 +43,9 @@ const CTA = () => {
 
           </button>
 
-          <button className="border-2 border-white px-8 py-4 rounded-xl font-semibold flex items-center gap-2 hover:bg-white hover:text-green-700 transition">
+          <button
+            onClick={() => navigate("/register")}
+            className="border-2 border-white px-8 py-4 rounded-xl font-semibold flex items-center gap-2 hover:bg-white hover:text-green-700 transition">
 
             <UserPlus size={20} />
 

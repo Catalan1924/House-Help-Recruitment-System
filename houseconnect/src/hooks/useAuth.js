@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
@@ -22,6 +23,7 @@ export const useLogin = () => {
     mutationFn: ({ email, password }) => apiSignIn(email, password),
     onSuccess: async (data) => {
       setUser(data.user);
+      toast.success("Welcome back!");
 
       try {
         const role = await getUserRole(data.user.id);
@@ -29,6 +31,9 @@ export const useLogin = () => {
       } catch {
         navigate("/", { replace: true });
       }
+    },
+    onError: (error) => {
+      toast.error(error.message || "Login failed. Please check your credentials.");
     },
   });
 };
@@ -40,6 +45,9 @@ export const useLogin = () => {
 export const useRegister = () => {
   return useMutation({
     mutationFn: ({ email, password }) => apiSignUp(email, password),
+    onError: (error) => {
+      toast.error(error.message || "Registration failed");
+    },
   });
 };
 
@@ -56,6 +64,7 @@ export const useLogout = () => {
     onSuccess: () => {
       setUser(null);
       queryClient.clear();
+      toast.success("Logged out successfully");
       navigate("/", { replace: true });
     },
   });
@@ -67,6 +76,12 @@ export const useLogout = () => {
 export const useResetPassword = () => {
   return useMutation({
     mutationFn: (email) => apiResetPassword(email),
+    onSuccess: () => {
+      toast.success("Password reset email sent! Check your inbox.");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to send reset email");
+    },
   });
 };
 
