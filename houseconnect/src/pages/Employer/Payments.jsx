@@ -1,4 +1,3 @@
-import DashboardLayout from "../../layouts/DashboardLayout";
 import { CreditCard, Download, CheckCircle2, Clock } from "lucide-react";
 
 const MOCK_PAYMENTS = [
@@ -9,7 +8,6 @@ const MOCK_PAYMENTS = [
 
 const EmployerPayments = () => {
   return (
-    <DashboardLayout>
       <div>
         <h1 className="text-3xl font-bold mb-2">Payments & Billing</h1>
         <p className="text-gray-500 mb-8">Manage your subscription and payment history</p>
@@ -75,7 +73,6 @@ const EmployerPayments = () => {
           </div>
         </div>
       </div>
-    </DashboardLayout>
   );
 };
 

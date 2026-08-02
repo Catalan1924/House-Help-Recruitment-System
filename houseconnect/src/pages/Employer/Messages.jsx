@@ -1,4 +1,3 @@
-import DashboardLayout from "../../layouts/DashboardLayout";
 import ConversationList from "../../components/messaging/ConversationList";
 import ChatWindow from "../../components/messaging/ChatWindow";
 import { useState } from "react";
@@ -7,7 +6,6 @@ const EmployerMessages = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);
 
   return (
-    <DashboardLayout>
       <div className="flex h-[calc(100vh-120px)] bg-white rounded-2xl shadow-sm overflow-hidden">
         <div className={`${selectedConversation ? "hidden md:block" : "block"} w-full md:w-96 border-r`}>
           <ConversationList onSelect={(c) => setSelectedConversation(c)} selectedId={selectedConversation?.id} />
@@ -22,7 +20,6 @@ const EmployerMessages = () => {
           )}
         </div>
       </div>
-    </DashboardLayout>
   );
 };
 

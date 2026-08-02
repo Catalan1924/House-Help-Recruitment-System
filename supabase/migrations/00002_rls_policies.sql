@@ -150,10 +150,7 @@ CREATE POLICY "Employers can view own jobs"
 DROP POLICY IF EXISTS "Workers can view applied jobs" ON jobs;
 CREATE POLICY "Workers can view applied jobs"
   ON jobs FOR SELECT
-  USING (EXISTS (
-    SELECT 1 FROM applications
-    WHERE job_id = jobs.id AND worker_id = auth.uid()
-  ));
+  USING (has_applied_to_job(jobs.id, auth.uid()));
 
 -- Employer can create jobs
 DROP POLICY IF EXISTS "Employers can create jobs" ON jobs;
@@ -200,9 +197,7 @@ CREATE POLICY "Workers can view own applications"
 DROP POLICY IF EXISTS "Employers can view applications for their jobs" ON applications;
 CREATE POLICY "Employers can view applications for their jobs"
   ON applications FOR SELECT
-  USING (EXISTS (
-    SELECT 1 FROM jobs WHERE id = applications.job_id AND employer_id = auth.uid()
-  ));
+  USING (is_job_owned_by_user(applications.job_id, auth.uid()));
 
 -- Worker can create applications
 DROP POLICY IF EXISTS "Workers can create applications" ON applications;
@@ -217,9 +212,7 @@ CREATE POLICY "Workers can create applications"
 DROP POLICY IF EXISTS "Employers can update application status" ON applications;
 CREATE POLICY "Employers can update application status"
   ON applications FOR UPDATE
-  USING (EXISTS (
-    SELECT 1 FROM jobs WHERE id = applications.job_id AND employer_id = auth.uid()
-  ));
+  USING (is_job_owned_by_user(applications.job_id, auth.uid()));
 
 -- Worker can withdraw own applications
 DROP POLICY IF EXISTS "Workers can withdraw own applications" ON applications;

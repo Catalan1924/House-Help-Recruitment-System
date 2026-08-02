@@ -17,6 +17,7 @@ const mapExperienceToEnum = (years) => {
 export const createProfile = async (user, form) => {
   const payload = {
     id: user.id,
+    email: user.email || form.email || null,
     full_name: form.full_name || form.fullName,
     phone: form.phone || null,
     county: form.county || null,

@@ -1,4 +1,3 @@
-import DashboardLayout from "../../layouts/DashboardLayout";
 import { FileCheck, X, Check, Eye } from "lucide-react";
 
 const MOCK_VERIFICATIONS = [
@@ -9,7 +8,6 @@ const MOCK_VERIFICATIONS = [
 
 const AdminVerification = () => {
   return (
-    <DashboardLayout>
       <div>
         <h1 className="text-3xl font-bold mb-2">Document Verification</h1>
         <p className="text-gray-500 mb-8">Review and verify worker documents</p>
@@ -57,7 +55,6 @@ const AdminVerification = () => {
           </div>
         </div>
       </div>
-    </DashboardLayout>
   );
 };
 

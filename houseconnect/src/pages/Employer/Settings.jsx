@@ -1,11 +1,9 @@
 import { useState } from "react";
-import DashboardLayout from "../../layouts/DashboardLayout";
 
 const EmployerSettings = () => {
   const [form, setForm] = useState({ companyName: "", contactPhone: "", contactEmail: "", address: "", notifications: true });
 
   return (
-    <DashboardLayout>
       <div className="max-w-3xl">
         <h1 className="text-3xl font-bold mb-2">Account Settings</h1>
         <p className="text-gray-500 mb-8">Manage your employer profile and preferences</p>
@@ -51,7 +49,6 @@ const EmployerSettings = () => {
           </button>
         </div>
       </div>
-    </DashboardLayout>
   );
 };
 

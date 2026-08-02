@@ -1,12 +1,10 @@
 import { useState } from "react";
-import DashboardLayout from "../../layouts/DashboardLayout";
 
 const AdminSettings = () => {
   const [commission, setCommission] = useState("10");
   const [minPayout, setMinPayout] = useState("1000");
 
   return (
-    <DashboardLayout>
       <div className="max-w-3xl">
         <h1 className="text-3xl font-bold mb-2">Platform Settings</h1>
         <p className="text-gray-500 mb-8">Configure platform parameters</p>
@@ -53,7 +51,6 @@ const AdminSettings = () => {
           </button>
         </div>
       </div>
-    </DashboardLayout>
   );
 };
 

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import DashboardLayout from "../../layouts/DashboardLayout";
 import { Search, Filter, Eye, Check, X, MessageCircle } from "lucide-react";
 
 const MOCK_APPLICANTS = [
@@ -16,7 +15,6 @@ const EmployerApplicants = () => {
   const filtered = activeTab === "all" ? MOCK_APPLICANTS : MOCK_APPLICANTS.filter((a) => a.status === activeTab);
 
   return (
-    <DashboardLayout>
       <div>
         <h1 className="text-3xl font-bold mb-2">Applicants</h1>
         <p className="text-gray-500 mb-6">Review and manage job applications</p>
@@ -56,8 +54,7 @@ const EmployerApplicants = () => {
           ))}
         </div>
       </div>
-    </DashboardLayout>
-  );
+    );
 };
 
 export default EmployerApplicants;

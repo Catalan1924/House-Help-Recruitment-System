@@ -122,8 +122,8 @@ const Sidebar = () => {
       <div className="border-t p-5">
         <div className="flex items-center gap-3">
           <img
-            src="https://i.pravatar.cc/100?img=32"
-            alt=""
+            src={`https://i.pravatar.cc/100?u=${user?.id || user?.email}`}
+            alt={user?.user_metadata?.full_name || user?.email || "User"}
             className="w-12 h-12 rounded-full"
           />
           {!collapsed && (

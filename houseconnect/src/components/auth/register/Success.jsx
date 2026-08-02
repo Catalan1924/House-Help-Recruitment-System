@@ -68,6 +68,25 @@ const Success = () => {
         });
       }
 
+      // 4. Redirect straight to the role-specific dashboard
+      navigate(`/${data.role}/dashboard`, { replace: true });
+
+      // 3. Create role-specific profile
+      if (data.role === "worker") {
+        await createWorkerProfile(user.id, {
+          experience_years: data.experience ? parseInt(data.experience) : 0,
+          expected_salary: data.expectedSalary ? parseInt(data.expectedSalary) : 0,
+          county: data.county,
+        });
+      } else if (data.role === "employer") {
+        await createEmployerProfile(user.id, {
+          county: data.county,
+          company_name: data.companyName || "",
+          household_type: data.householdType || "",
+          preferred_gender: data.preferredGender || "",
+        });
+      }
+
       // TODO: Upload documents to Supabase Storage in Phase 3
 
       setStatus("success");

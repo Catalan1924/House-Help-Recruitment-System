@@ -46,6 +46,30 @@ CREATE TRIGGER on_auth_user_created
 
 
 -- ------------------------------------------------------------
+-- 1.1 Helper functions for RLS checks
+-- ------------------------------------------------------------
+CREATE OR REPLACE FUNCTION has_applied_to_job(job_uuid UUID, user_uuid UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM applications
+    WHERE job_id = job_uuid AND worker_id = user_uuid
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
+
+CREATE OR REPLACE FUNCTION is_job_owned_by_user(job_uuid UUID, user_uuid UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+  owner_uuid UUID;
+BEGIN
+  SELECT employer_id INTO owner_uuid FROM jobs WHERE id = job_uuid;
+  RETURN owner_uuid = user_uuid;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
+
+
+-- ------------------------------------------------------------
 -- 2. Update updated_at timestamp automatically
 -- ------------------------------------------------------------
 CREATE OR REPLACE FUNCTION update_timestamp()

@@ -52,13 +52,13 @@ const Navbar = () => {
           <li>
             <button onClick={() => goTo("/employer/find-workers")} className="hover:text-green-700 cursor-pointer flex items-center gap-1">
               <Users size={18} />
-              House Helps
+              
             </button>
           </li>
           <li>
             <button onClick={() => goTo("/about")} className="hover:text-green-700 cursor-pointer flex items-center gap-1">
               <Info size={18} />
-              About
+              
             </button>
           </li>
           <li>

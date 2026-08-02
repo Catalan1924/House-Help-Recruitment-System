@@ -29,6 +29,7 @@ END $$;
 
 CREATE TABLE IF NOT EXISTS profiles (
   id              UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email           TEXT NOT NULL,
   full_name       TEXT NOT NULL,
   phone           TEXT,
   county          TEXT,

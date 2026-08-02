@@ -5,8 +5,46 @@ import {
   Moon,
   ChevronDown,
 } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
+const roleLabels = {
+  worker: "House Help",
+  employer: "Employer",
+  admin: "Admin",
+};
 
 const Topbar = () => {
+  const navigate = useNavigate();
+  const { user, userRole } = useAuth();
+  const metadata = user?.user_metadata || {};
+  const name = metadata.full_name || metadata.name || user?.email?.split("@")[0] || "User";
+  const roleLabel = roleLabels[userRole] || "Member";
+  const [theme, setTheme] = useState("light");
+
+  const handleMessages = () => {
+    if (user && userRole) {
+      navigate(`/${userRole}/messages`);
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const handleNotifications = () => {
+    if (user && userRole) {
+      navigate(`/${userRole}/dashboard`);
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+    document.documentElement.classList.toggle("dark", nextTheme === "dark");
+  };
+
   return (
     <header className="bg-white border-b h-20 px-8 flex items-center justify-between">
 
@@ -18,7 +56,7 @@ const Topbar = () => {
         </h1>
 
         <p className="text-gray-500">
-          Good morning, Mary 
+          Good morning, {name}
         </p>
 
       </div>
@@ -40,7 +78,7 @@ const Topbar = () => {
       {/* Right */}
       <div className="flex items-center gap-5">
 
-        <button className="relative">
+        <button className="relative" onClick={handleMessages}>
 
           <MessageCircle />
 
@@ -50,7 +88,7 @@ const Topbar = () => {
 
         </button>
 
-        <button className="relative">
+        <button className="relative" onClick={handleNotifications}>
 
           <Bell />
 
@@ -60,7 +98,7 @@ const Topbar = () => {
 
         </button>
 
-        <button>
+        <button onClick={toggleTheme}>
 
           <Moon />
 
@@ -69,22 +107,19 @@ const Topbar = () => {
         <div className="flex items-center gap-3 cursor-pointer">
 
           <img
-            src="https://i.pravatar.cc/100?img=32"
+            src={`https://i.pravatar.cc/100?u=${user?.id || name}`}
             className="w-12 h-12 rounded-full"
+            alt={name}
           />
 
           <div>
 
             <h3 className="font-semibold">
-
-              Mary Wanjiku
-
+              {name}
             </h3>
 
             <p className="text-sm text-gray-500">
-
-              House Help
-
+              {roleLabel}
             </p>
 
           </div>

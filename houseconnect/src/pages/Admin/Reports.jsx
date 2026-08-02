@@ -1,4 +1,3 @@
-import DashboardLayout from "../../layouts/DashboardLayout";
 import { BarChart3, Users, Briefcase, FileText } from "lucide-react";
 
 const stats = [
@@ -10,7 +9,6 @@ const stats = [
 
 const AdminReports = () => {
   return (
-    <DashboardLayout>
       <div>
         <h1 className="text-3xl font-bold mb-2">Reports & Analytics</h1>
         <p className="text-gray-500 mb-8">Platform performance overview</p>
@@ -64,7 +62,6 @@ const AdminReports = () => {
           </div>
         </div>
       </div>
-    </DashboardLayout>
   );
 };
 

@@ -1,4 +1,3 @@
-import DashboardLayout from "../../layouts/DashboardLayout";
 import { Star, MessageSquare, CheckCircle2 } from "lucide-react";
 
 const MOCK_FEEDBACK = [
@@ -11,7 +10,6 @@ const typeColors = { "Bug Report": "bg-red-100 text-red-800", "Feature Request":
 
 const AdminFeedback = () => {
   return (
-    <DashboardLayout>
       <div>
         <h1 className="text-3xl font-bold mb-2">User Feedback</h1>
         <p className="text-gray-500 mb-8">Review and respond to user feedback</p>
@@ -51,7 +49,6 @@ const AdminFeedback = () => {
           ))}
         </div>
       </div>
-    </DashboardLayout>
   );
 };
 

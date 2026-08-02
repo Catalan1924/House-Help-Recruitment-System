@@ -1,5 +1,4 @@
 import { useState } from "react";
-import DashboardLayout from "../../layouts/DashboardLayout";
 import { Search, Heart, Star } from "lucide-react";
 
 const MOCK_SAVED = [
@@ -14,7 +13,6 @@ const EmployerWorkers = () => {
   const filtered = MOCK_SAVED.filter((w) => w.name.toLowerCase().includes(search.toLowerCase()) || w.county.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <DashboardLayout>
       <div>
         <h1 className="text-3xl font-bold mb-2">Saved Workers</h1>
         <p className="text-gray-500 mb-6">Workers you've shortlisted or saved</p>
@@ -51,7 +49,6 @@ const EmployerWorkers = () => {
           ))}
         </div>
       </div>
-    </DashboardLayout>
   );
 };
 

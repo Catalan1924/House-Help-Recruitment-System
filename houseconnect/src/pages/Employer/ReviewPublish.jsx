@@ -15,7 +15,7 @@ const ReviewPublish = ({ previousStep, jobData }) => {
       await createJob.mutateAsync({
         ...jobData,
         employer_id: user.id,
-        status: "active",
+        status: "open",
       });
       navigate("/employer/dashboard", { replace: true });
     } catch {

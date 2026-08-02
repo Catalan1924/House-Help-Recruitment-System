@@ -11,6 +11,65 @@ body {
   box-sizing: border-box;
 }
 
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.dark body,
+.dark #root {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+.dark .bg-slate-100 {
+  background-color: #0f172a !important;
+}
+
+.dark .bg-white {
+  background-color: #111827 !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #111827 !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #1f2937 !important;
+}
+
+.dark .bg-green-50 {
+  background-color: #052e16 !important;
+}
+
+.dark .border-gray-200 {
+  border-color: #334155 !important;
+}
+
+.dark .border-gray-100 {
+  border-color: #334155 !important;
+}
+
+.dark .text-gray-500,
+.dark .text-gray-600,
+.dark .text-gray-400,
+.dark .text-gray-700 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-gray-900,
+.dark .text-gray-800 {
+  color: #f8fafc !important;
+}
+
+.dark .text-black,
+.dark .text-slate-900 {
+  color: #f8fafc !important;
+}
+
 #root {
   min-height: 100vh;
 }

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import DashboardLayout from "../../layouts/DashboardLayout";
 import { Search, Filter, MoreVertical, Shield, ShieldOff, Trash2 } from "lucide-react";
 
 const MOCK_USERS = [
@@ -22,7 +21,6 @@ const AdminUsers = () => {
   );
 
   return (
-    <DashboardLayout>
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
@@ -97,7 +95,6 @@ const AdminUsers = () => {
           </div>
         </div>
       </div>
-    </DashboardLayout>
   );
 };
 
