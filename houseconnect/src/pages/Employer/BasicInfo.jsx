@@ -22,9 +22,6 @@ const BasicInfo = ({ nextStep, data, updateData }) => {
           value={data.employment_type}
           onChange={handleChange}
         >
-          <option value="Live-in">Live-in</option>
-          <option value="Live-out">Live-out</option>
-          <option value="Part-time">Part-time</option>
           <option value="Full-time">Full-time</option>
           <option value="Contract">Contract</option>
           <option value="Temporary">Temporary</option>

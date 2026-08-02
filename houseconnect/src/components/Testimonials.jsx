@@ -47,8 +47,8 @@ const Testimonials = () => {
           </h2>
 
           <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-            Hear from employers and domestic workers who have successfully
-            connected through HouseConnect.
+            Hear from our clients and house helps who have successfully
+            connected through our website - HouseConnect.
           </p>
 
         </div>
@@ -77,7 +77,7 @@ const Testimonials = () => {
                   <Star
                     key={star}
                     size={18}
-                    fill="#FACC15"
+                    fill = "#FACC15"
                     className="text-yellow-400"
                   />
                 ))}
