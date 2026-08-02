@@ -39,8 +39,41 @@ CREATE POLICY "Admins can view all profiles"
     SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
   ));
 
--- Workers/employers can view profiles of people they interact with
--- (conversation participants, job posters, etc.) — handled by join policies.
+-- Employers can view worker profiles in worker listings
+DROP POLICY IF EXISTS "Employers can view worker profiles" ON profiles;
+CREATE POLICY "Employers can view worker profiles"
+  ON profiles FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM house_help_profiles WHERE user_id = profiles.id
+    )
+    AND EXISTS (
+      SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('employer', 'admin')
+    )
+  );
+
+-- Workers can view employer profiles in employer listings
+DROP POLICY IF EXISTS "Workers can view employer profiles" ON profiles;
+CREATE POLICY "Workers can view employer profiles"
+  ON profiles FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM employer_profiles WHERE user_id = profiles.id
+    )
+    AND EXISTS (
+      SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('worker', 'admin')
+    )
+  );
+
+-- Public can view employer profiles for open jobs
+DROP POLICY IF EXISTS "Public can view employer profiles for open jobs" ON profiles;
+CREATE POLICY "Public can view employer profiles for open jobs"
+  ON profiles FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM jobs WHERE employer_id = profiles.id AND status::text = 'open'
+    )
+  );
 
 -- Users can update their own profile (but NOT their role)
 DROP POLICY IF EXISTS "Users can update own profile" ON profiles;

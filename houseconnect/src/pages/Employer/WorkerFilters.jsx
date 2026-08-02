@@ -21,8 +21,9 @@ const WorkerFilters = ({ filters = {}, onChange }) => {
 
       <select name="availability" className="w-full border rounded-xl p-3" value={filters.availability || ""} onChange={handleChange}>
         <option value="">Availability</option>
-        <option value="available">Available</option>
-        <option value="busy">Busy</option>
+        <option value="Available">Available</option>
+        <option value="Employed">Employed</option>
+        <option value="Not Available">Not Available</option>
       </select>
 
       <select name="experience_min" className="w-full border rounded-xl p-3" value={filters.experience_min || ""} onChange={handleChange}>

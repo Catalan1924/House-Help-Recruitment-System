@@ -9,7 +9,7 @@ const PostJob = () => {
   const [step, setStep] = useState(1);
   const [jobData, setJobData] = useState({
     title: "",
-    employment_type: "live-in",
+    employment_type: "Live-in",
     county: "",
     town: "",
     description: "",

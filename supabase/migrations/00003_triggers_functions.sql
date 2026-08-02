@@ -51,6 +51,7 @@ CREATE TRIGGER on_auth_user_created
 CREATE OR REPLACE FUNCTION has_applied_to_job(job_uuid UUID, user_uuid UUID)
 RETURNS BOOLEAN AS $$
 BEGIN
+  SET LOCAL row_level_security = off;
   RETURN EXISTS (
     SELECT 1 FROM applications
     WHERE job_id = job_uuid AND worker_id = user_uuid
@@ -63,6 +64,7 @@ RETURNS BOOLEAN AS $$
 DECLARE
   owner_uuid UUID;
 BEGIN
+  SET LOCAL row_level_security = off;
   SELECT employer_id INTO owner_uuid FROM jobs WHERE id = job_uuid;
   RETURN owner_uuid = user_uuid;
 END;

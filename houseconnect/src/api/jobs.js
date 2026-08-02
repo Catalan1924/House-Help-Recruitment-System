@@ -52,6 +52,32 @@ export const getJobById = async (id) => {
 /**
  * Create a new job posting (employer only).
  */
+const normalizeEmploymentType = (type) => {
+  if (!type) return null;
+  const normalized = String(type).trim();
+  const mapping = {
+    "live-in": "Live-in",
+    "live-out": "Live-out",
+    "part-time": "Part-time",
+    "full-time": "Full-time",
+    "contract": "Contract",
+    "temporary": "Temporary",
+    "Live-in": "Live-in",
+    "Live-out": "Live-out",
+    "Part-time": "Part-time",
+    "Full-time": "Full-time",
+    "Contract": "Contract",
+    "Temporary": "Temporary",
+  };
+  return mapping[normalized] || normalized;
+};
+
+const toNullableNumber = (value) => {
+  if (value === null || value === undefined || value === "") return null;
+  const parsed = Number(value);
+  return Number.isNaN(parsed) ? null : parsed;
+};
+
 export const createJob = async (jobData) => {
   const { data, error } = await supabase
     .from("jobs")
@@ -64,9 +90,9 @@ export const createJob = async (jobData) => {
       benefits: jobData.benefits || [],
       county: jobData.county,
       town: jobData.town || null,
-      employment_type: jobData.employment_type,
-      salary_min: jobData.salary_min,
-      salary_max: jobData.salary_max,
+      employment_type: normalizeEmploymentType(jobData.employment_type),
+      salary_min: toNullableNumber(jobData.salary_min),
+      salary_max: toNullableNumber(jobData.salary_max),
       salary_currency: jobData.salary_currency || "KES",
       status: "open",
     })

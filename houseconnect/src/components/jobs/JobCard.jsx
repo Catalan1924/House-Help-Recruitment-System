@@ -23,7 +23,9 @@ const JobCard = ({ job }) => {
         </span>
         <span className="flex gap-2 items-center">
           <Wallet size={18} />
-          {job.salary || "Negotiable"}
+          {job.salary_min || job.salary_max
+            ? `KES ${job.salary_min || "0"} - ${job.salary_max || "0"}`
+            : "Negotiable"}
         </span>
         <span className="flex gap-2 items-center">
           <Clock3 size={18} />

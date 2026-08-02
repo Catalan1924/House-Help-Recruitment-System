@@ -109,7 +109,8 @@ const WorkerEmergency = () => {
                 <Phone size={18} className="text-green-700" />
                 <div>
                   <p className="font-medium">HouseConnect Emergency Line</p>
-                  <p className="text-gray-500">+254 700 000 999</p>
+                  <p className="text-gray-500">+254 116606848</p>
+                  <p className="text-gray-500">+254 704696930</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">

@@ -32,6 +32,21 @@ export const updateProfile = async (userId, updates) => {
 /**
  * Get worker profiles with optional filters.
  */
+const EXPERIENCE_MIN_TO_ENUM = {
+  1: ["1-3 years", "3-5 years", "5-10 years", "10+ years"],
+  3: ["3-5 years", "5-10 years", "10+ years"],
+  5: ["5-10 years", "10+ years"],
+};
+
+const normalizeAvailabilityFilter = (availability) => {
+  if (!availability) return null;
+  const normalized = String(availability).trim().toLowerCase();
+  if (normalized === "available") return "Available";
+  if (normalized === "busy" || normalized === "employed") return "Employed";
+  if (normalized === "not available" || normalized === "not_available") return "Not Available";
+  return availability;
+};
+
 export const getWorkerProfiles = async (filters = {}) => {
   let query = supabase
     .from("house_help_profiles")
@@ -39,20 +54,28 @@ export const getWorkerProfiles = async (filters = {}) => {
     .order("created_at", { ascending: false });
 
   if (filters.county) {
-    query = query.eq("county", filters.county);
+    query = query.eq("profile.county", filters.county);
   }
+
   if (filters.experience_min) {
-    query = query.gte("experience", filters.experience_min);
+    const experienceOptions = EXPERIENCE_MIN_TO_ENUM[Number(filters.experience_min)];
+    if (experienceOptions) {
+      query = query.in("experience", experienceOptions);
+    }
   }
+
   if (filters.availability) {
-    query = query.eq("availability", filters.availability);
+    const availabilityValue = normalizeAvailabilityFilter(filters.availability);
+    query = query.eq("availability", availabilityValue);
   }
+
   if (filters.expected_salary_max) {
     query = query.lte("expected_salary", filters.expected_salary_max);
   }
+
   if (filters.search) {
     // Search through the joined profile full_name
-    query = query.or(`county.ilike.%${filters.search}%`);
+    query = query.ilike("profile.full_name", `%${filters.search}%`);
   }
 
   const { data, error } = await query;
@@ -99,10 +122,13 @@ export const getEmployerProfiles = async (filters = {}) => {
     .order("created_at", { ascending: false });
 
   if (filters.county) {
-    query = query.eq("county", filters.county);
+    query = query.eq("profile.county", filters.county);
   }
   if (filters.verified !== undefined) {
     query = query.eq("verified", filters.verified);
+  }
+  if (filters.search) {
+    query = query.ilike("profile.full_name", `%${filters.search}%`);
   }
 
   const { data, error } = await query;
