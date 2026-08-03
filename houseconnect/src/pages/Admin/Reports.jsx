@@ -1,68 +1,182 @@
-import { BarChart3, Users, Briefcase, FileText } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Users, Briefcase, FileText, TrendingUp, AlertCircle, DollarSign, CheckCircle2 } from "lucide-react";
 
-const stats = [
-  { icon: Users, label: "Total Users", value: "1,245", change: "+12% this month" },
-  { icon: Briefcase, label: "Active Jobs", value: "342", change: "+8% this month" },
-  { icon: FileText, label: "Applications", value: "1,890", change: "+22% this month" },
-  { icon: BarChart3, label: "Revenue", value: "KES 450K", change: "+15% this month" },
-];
+import { getPlatformAnalytics } from "../../api/admin";
+import { DashboardSkeleton } from "../../components/LoadingSkeleton";
 
-const AdminReports = () => {
-  return (
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Reports & Analytics</h1>
-        <p className="text-gray-500 mb-8">Platform performance overview</p>
+const Reports = () => {
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["admin-reports"],
+    queryFn: getPlatformAnalytics,
+    staleTime: 60_000,
+  });
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          {stats.map((s) => {
-            const Icon = s.icon;
-            return (
-              <div key={s.label} className="bg-white rounded-2xl p-6 shadow-sm">
-                <Icon className="text-green-700" size={28} />
-                <p className="text-3xl font-bold mt-3">{s.value}</p>
-                <p className="text-gray-500">{s.label}</p>
-                <p className="text-sm text-green-600 mt-1">{s.change}</p>
-              </div>
-            );
-          })}
-        </div>
+  if (isLoading) return <DashboardSkeleton />;
 
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h3 className="font-semibold text-lg mb-4">User Registrations</h3>
-            <div className="h-48 flex items-end gap-3">
-              {[40, 55, 45, 70, 60, 85, 50, 75, 90, 65, 80, 95].map((h, i) => (
-                <div key={i} className="flex-1 bg-green-200 rounded-t-lg" style={{ height: `${h}%` }}>
-                  <div className="bg-green-600 rounded-t-lg" style={{ height: `${h * 0.7}%` }} />
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between mt-2 text-xs text-gray-400">
-              <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-              <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h3 className="font-semibold text-lg mb-4">User Distribution</h3>
-            <div className="space-y-4 mt-6">
-              <div>
-                <div className="flex justify-between text-sm mb-1"><span>Workers</span><span>65%</span></div>
-                <div className="w-full bg-gray-200 rounded-full h-3"><div className="bg-green-600 h-3 rounded-full" style={{ width: "65%" }} /></div>
-              </div>
-              <div>
-                <div className="flex justify-between text-sm mb-1"><span>Employers</span><span>30%</span></div>
-                <div className="w-full bg-gray-200 rounded-full h-3"><div className="bg-blue-600 h-3 rounded-full" style={{ width: "30%" }} /></div>
-              </div>
-              <div>
-                <div className="flex justify-between text-sm mb-1"><span>Admins</span><span>5%</span></div>
-                <div className="w-full bg-gray-200 rounded-full h-3"><div className="bg-purple-600 h-3 rounded-full" style={{ width: "5%" }} /></div>
-              </div>
-            </div>
-          </div>
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center min-h-[40vh]">
+        <div className="text-center">
+          <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Couldn't load reports</h2>
+          <p className="text-gray-500 mb-4">{error?.message}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-2 bg-green-700 text-white rounded-xl hover:bg-green-800"
+          >
+            Retry
+          </button>
         </div>
       </div>
+    );
+  }
+
+  const stats = data || {};
+
+  const summaryCards = [
+    {
+      icon: Users,
+      label: "Total Users",
+      value: (stats.totalUsers || 0).toLocaleString(),
+      detail: `${stats.workers || 0} workers · ${stats.employers || 0} employers`,
+      color: "text-blue-600",
+      bg: "bg-blue-50",
+    },
+    {
+      icon: Briefcase,
+      label: "Active Jobs",
+      value: (stats.activeJobs || 0).toLocaleString(),
+      detail: `${(stats.totalApplications || 0).toLocaleString()} total applications`,
+      color: "text-green-600",
+      bg: "bg-green-50",
+    },
+    {
+      icon: DollarSign,
+      label: "Total Revenue",
+      value: `KES ${(stats.totalRevenue || 0).toLocaleString()}`,
+      detail: `${(stats.completedPayments || 0).toLocaleString()} completed payments`,
+      color: "text-orange-600",
+      bg: "bg-orange-50",
+    },
+    {
+      icon: TrendingUp,
+      label: "Application Rate",
+      value: stats.totalUsers
+        ? ((stats.totalApplications || 0) / stats.totalUsers).toFixed(1)
+        : "0.0",
+      detail: "applications per user",
+      color: "text-purple-600",
+      bg: "bg-purple-50",
+    },
+  ];
+
+  const workerPct = stats.totalUsers ? Math.round(((stats.workers || 0) / stats.totalUsers) * 100) : 0;
+  const employerPct = stats.totalUsers ? Math.round(((stats.employers || 0) / stats.totalUsers) * 100) : 0;
+
+  const insights = [
+    {
+      title: "Worker-to-Employer Ratio",
+      value: stats.employers ? `${((stats.workers || 0) / stats.employers).toFixed(1)}:1` : "N/A",
+      description: "Workers per employer on the platform. A higher ratio means more supply than demand.",
+    },
+    {
+      title: "Revenue per Payment",
+      value: stats.completedPayments ? `KES ${Math.round((stats.totalRevenue || 0) / stats.completedPayments).toLocaleString()}` : "N/A",
+      description: "Average transaction value across all completed payments.",
+    },
+    {
+      title: "Platform Growth",
+      value: stats.monthlySignups?.length
+        ? `${stats.monthlySignups[stats.monthlySignups.length - 1]?.count || 0} users`
+        : "N/A",
+      description: "Users registered in the most recent month with data.",
+    },
+    {
+      title: "Role Distribution",
+      value: `${workerPct}% / ${employerPct}%`,
+      description: "Workers vs employers split. A healthy platform has a balanced mix.",
+    },
+  ];
+
+  return (
+    <div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold">Reports & Insights</h1>
+        <p className="text-gray-500 mt-1">Platform performance overview and trends</p>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        {summaryCards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <div key={card.label} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <div className={`w-12 h-12 ${card.bg} rounded-xl flex items-center justify-center mb-4`}>
+                <Icon className={card.color} size={24} />
+              </div>
+              <p className="text-3xl font-bold text-slate-900">{card.value}</p>
+              <p className="text-gray-500 text-sm mt-1">{card.label}</p>
+              <p className="text-xs text-gray-400 mt-2">{card.detail}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Insights */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+        <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
+          <CheckCircle2 size={20} className="text-green-600" />
+          Key Insights
+        </h2>
+        <div className="grid sm:grid-cols-2 gap-6">
+          {insights.map((insight) => (
+            <div key={insight.title} className="rounded-xl border border-slate-200 p-5">
+              <p className="text-sm text-gray-500 mb-1">{insight.title}</p>
+              <p className="text-2xl font-bold text-slate-800">{insight.value}</p>
+              <p className="text-sm text-gray-500 mt-2">{insight.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Monthly Registrations Table */}
+      {stats.monthlySignups?.length > 0 && (
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <h2 className="text-xl font-semibold mb-4">Monthly Registrations</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 text-left">
+                <tr>
+                  <th className="p-3 font-medium text-sm text-gray-600">Month</th>
+                  <th className="p-3 font-medium text-sm text-gray-600">New Users</th>
+                  <th className="p-3 font-medium text-sm text-gray-600">Bar</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.monthlySignups.map((m, i) => {
+                  const maxCount = Math.max(...stats.monthlySignups.map((x) => x.count), 1);
+                  return (
+                    <tr key={i} className="border-t hover:bg-gray-50">
+                      <td className="p-3 font-medium text-slate-700">{m.month}</td>
+                      <td className="p-3 text-gray-600">{m.count}</td>
+                      <td className="p-3">
+                        <div className="w-full bg-gray-100 rounded-full h-2.5">
+                          <div
+                            className="bg-green-500 h-2.5 rounded-full"
+                            style={{ width: `${(m.count / maxCount) * 100}%` }}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
-export default AdminReports;
+export default Reports;

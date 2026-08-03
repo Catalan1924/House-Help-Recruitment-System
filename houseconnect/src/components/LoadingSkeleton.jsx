@@ -163,4 +163,11 @@ export const TextSkeleton = ({ width = "w-24", className = "" }) => (
   <SkeletonBlock className={`h-4 inline-block align-middle ${width} ${className}`} />
 );
 
+/**
+ * Single inline row skeleton (for table rows).
+ */
+export const LoadingRow = ({ className = "" }) => (
+  <div className={`animate-pulse bg-gray-200 rounded h-5 ${className || "w-full"}`} />
+);
+
 export default SkeletonBlock;
