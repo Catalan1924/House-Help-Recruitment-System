@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import {
@@ -23,13 +22,11 @@ import { DashboardSkeleton } from "../../components/LoadingSkeleton";
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const [error, setError] = useState(null);
 
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats, isLoading: statsLoading, isError: statsError, error: statsErr } = useQuery({
     queryKey: ["workerStats", user?.id],
     queryFn: () => getWorkerStats(user.id),
     enabled: !!user?.id,
-    onError: (err) => setError(err.message),
   });
 
   const { data: jobs = [], isLoading: jobsLoading } = useQuery({
@@ -39,16 +36,17 @@ const Dashboard = () => {
   });
 
   const isLoading = statsLoading || jobsLoading;
+  const isError = statsError;
 
   if (isLoading) return <DashboardSkeleton />;
 
-  if (error) {
+  if (isError) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
           <h2 className="text-xl font-semibold mb-2">Failed to load dashboard</h2>
-          <p className="text-gray-500 mb-4">{error}</p>
+          <p className="text-gray-500 mb-4">{statsErr?.message || "Something went wrong"}</p>
           <button
             onClick={() => window.location.reload()}
             className="px-6 py-2 bg-green-700 text-white rounded-xl hover:bg-green-800"

@@ -23,7 +23,7 @@ export const createProfile = async (user, form) => {
     county: form.county || null,
     town: form.town || null,
     role: form.role,
-    status: "active",               // valid CHECK value
+    status: "active",                 // valid CHECK value
   };
 
   const { error } = await supabase

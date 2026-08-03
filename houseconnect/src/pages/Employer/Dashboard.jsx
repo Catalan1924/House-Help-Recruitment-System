@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import {
@@ -13,32 +12,30 @@ import {
 import { getEmployerStats } from "../../api/dashboard";
 import { useAuth } from "../../context/AuthContext";
 import StatCard from "../../components/dashboard/StatCard";
-import JobRecommendations from "../../components/dashboard/JobRecommendations";
-import ApplicationProgress from "../../components/dashboard/ApplicationProgress";
+import MyRecentJobs from "../../components/dashboard/MyRecentJobs";
+import RecentApplicants from "../../components/dashboard/RecentApplicants";
 import RecentActivity from "../../components/dashboard/RecentActivity";
 import NotificationsWidget from "../../components/dashboard/NotificationsWidget";
 import { DashboardSkeleton } from "../../components/LoadingSkeleton";
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const [error, setError] = useState(null);
 
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading, isError, error } = useQuery({
     queryKey: ["employerStats", user?.id],
     queryFn: () => getEmployerStats(user.id),
     enabled: !!user?.id,
-    onError: (err) => setError(err.message),
   });
 
   if (isLoading) return <DashboardSkeleton />;
 
-  if (error) {
+  if (isError) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
           <h2 className="text-xl font-semibold mb-2">Failed to load dashboard</h2>
-          <p className="text-gray-500 mb-4">{error}</p>
+          <p className="text-gray-500 mb-4">{error?.message || "Something went wrong"}</p>
           <button
             onClick={() => window.location.reload()}
             className="px-6 py-2 bg-green-700 text-white rounded-xl hover:bg-green-800"
@@ -102,9 +99,9 @@ const Dashboard = () => {
 
       <div className="grid xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2">
-          <JobRecommendations />
+          <MyRecentJobs />
         </div>
-        <ApplicationProgress />
+        <RecentApplicants />
       </div>
 
       <div className="grid xl:grid-cols-2 gap-6">

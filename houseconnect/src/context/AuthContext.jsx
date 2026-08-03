@@ -4,23 +4,42 @@ import { getUserRole } from "../services/userService";
 
 const AuthContext = createContext();
 
+const VALID_ROLES = ["worker", "employer", "admin"];
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch role whenever user changes
+  // Fetch role whenever user changes.
   useEffect(() => {
     const fetchRole = async () => {
-      if (user) {
-        try {
-          const role = await getUserRole(user.id);
-          setUserRole(role);
-        } catch {
+      if (!user) {
+        setUserRole(null);
+        return;
+      }
+
+      // 1. Try from user_metadata first (set during signup, immediately available)
+      const metaRole = user.user_metadata?.role;
+      if (metaRole && VALID_ROLES.includes(metaRole)) {
+        setUserRole(metaRole);
+      }
+
+      // 2. Now try the database (authoritative source)
+      try {
+        const dbRole = await getUserRole(user.id);
+        if (dbRole && VALID_ROLES.includes(dbRole)) {
+          setUserRole(dbRole);
+        } else if (!metaRole) {
+          // No metadata fallback and DB didn't return a valid role
           setUserRole(null);
         }
-      } else {
-        setUserRole(null);
+      } catch {
+        // DB query failed — keep the metadata fallback if we set it above,
+        // otherwise clear.
+        if (!metaRole) {
+          setUserRole(null);
+        }
       }
     };
 

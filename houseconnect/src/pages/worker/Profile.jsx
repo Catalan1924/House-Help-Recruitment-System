@@ -6,14 +6,23 @@ const Profile = () => {
   const email = user?.email || "—";
   const metadata = user?.user_metadata || {};
   const name = metadata.full_name || metadata.name || "Worker";
+  const avatarUrl = metadata.avatar_url || null;
 
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-center gap-4">
-          <div className="rounded-full bg-green-100 p-3">
-            <UserCircle2 className="h-8 w-8 text-green-700" />
-          </div>
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt=""
+              className="h-16 w-16 rounded-full object-cover"
+            />
+          ) : (
+            <div className="rounded-full bg-green-100 p-3">
+              <UserCircle2 className="h-8 w-8 text-green-700" />
+            </div>
+          )}
           <div>
             <h2 className="text-xl font-semibold">{name}</h2>
             <p className="text-sm text-slate-500 capitalize">{userRole || "worker"} profile</p>
