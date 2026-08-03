@@ -97,39 +97,91 @@ export const updateEmergencyAlert = async (id, status, resolvedBy) => {
  * Get admin dashboard recent activity (combined feed).
  */
 export const getRecentActivity = async (limit = 20) => {
-  // Fetch recent applications, jobs, reviews as a combined feed
-  const [applications, jobs, reviews] = await Promise.all([
+  // Fetch recent applications, jobs, reviews as a combined feed.
+  // Use flat selects with manual stitching to avoid PostgREST
+  // embedded-filter pitfalls (ambiguous columns, wrong FK table names).
+  const [appsRes, jobsRes, reviewsRes] = await Promise.all([
     supabase
       .from("applications")
-      .select("*, worker:worker_id(full_name), job:job_id(title)")
+      .select("id, worker_id, job_id, status, created_at")
       .order("created_at", { ascending: false })
       .limit(limit),
     supabase
       .from("jobs")
-      .select("*, employer:employer_id(full_name)")
+      .select("id, employer_id, title, created_at")
       .order("created_at", { ascending: false })
       .limit(limit),
     supabase
       .from("reviews")
-      .select("*, reviewer:reviewer_id(full_name), reviewee:reviewee_id(full_name)")
+      .select("id, reviewer_id, reviewee_id, rating, created_at")
       .order("created_at", { ascending: false })
       .limit(limit),
   ]);
 
+  const applications = appsRes.data || [];
+  const jobs = jobsRes.data || [];
+  const reviews = reviewsRes.data || [];
+
+  // Collect unique IDs for batch lookups
+  const workerIds = [...new Set(applications.map((a) => a.worker_id))];
+  const jobIds = [...new Set(applications.map((a) => a.job_id))];
+  const employerIds = [...new Set(jobs.map((j) => j.employer_id))];
+  const allUserIds = [...new Set([...workerIds, ...employerIds, ...reviews.map((r) => r.reviewer_id), ...reviews.map((r) => r.reviewee_id)])];
+
+  // Batch fetch all referenced profiles
+  let profilesMap = {};
+  if (allUserIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, full_name")
+      .in("id", allUserIds);
+    profilesMap = Object.fromEntries((profiles || []).map((p) => [p.id, p]));
+  }
+
+  // Batch fetch all referenced jobs (for applications)
+  let jobsMap = {};
+  if (jobIds.length > 0) {
+    const { data: jobRows } = await supabase
+      .from("jobs")
+      .select("id, title")
+      .in("id", jobIds);
+    jobsMap = Object.fromEntries((jobRows || []).map((j) => [j.id, j]));
+  }
+
+  // Stitch worker + job info into applications
+  const enrichedApps = applications.map((a) => ({
+    ...a,
+    worker: profilesMap[a.worker_id] || null,
+    job: jobsMap[a.job_id] || null,
+  }));
+
+  // Stitch employer info into jobs
+  const enrichedJobs = jobs.map((j) => ({
+    ...j,
+    employer: profilesMap[j.employer_id] || null,
+  }));
+
+  // Stitch reviewer/reviewee info into reviews
+  const enrichedReviews = reviews.map((r) => ({
+    ...r,
+    reviewer: profilesMap[r.reviewer_id] || null,
+    reviewee: profilesMap[r.reviewee_id] || null,
+  }));
+
   const activities = [
-    ...(applications.data || []).map((a) => ({
+    ...enrichedApps.map((a) => ({
       type: "application",
       message: `${a.worker?.full_name || "A worker"} applied for "${a.job?.title || "a job"}"`,
       timestamp: a.created_at,
       data: a,
     })),
-    ...(jobs.data || []).map((j) => ({
+    ...enrichedJobs.map((j) => ({
       type: "job",
       message: `${j.employer?.full_name || "An employer"} posted "${j.title}"`,
       timestamp: j.created_at,
       data: j,
     })),
-    ...(reviews.data || []).map((r) => ({
+    ...enrichedReviews.map((r) => ({
       type: "review",
       message: `${r.reviewer?.full_name || "A user"} left a ${r.rating}★ review`,
       timestamp: r.created_at,
