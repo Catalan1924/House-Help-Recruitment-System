@@ -27,7 +27,10 @@ const MyRecentJobs = () => {
     return (
       <div className="bg-white rounded-2xl shadow p-6">
         <h2 className="text-2xl font-bold mb-8">My Job Postings</h2>
-        <p className="text-red-500 text-center py-8">Failed to load jobs.</p>
+        <div className="text-center py-8">
+          <p className="text-gray-600 font-medium mb-1">Couldn't load your job postings</p>
+          <p className="text-gray-400 text-sm">Please refresh the page or try again shortly.</p>
+        </div>
       </div>
     );
   }

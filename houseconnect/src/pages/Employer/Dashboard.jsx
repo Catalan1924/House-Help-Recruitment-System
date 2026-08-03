@@ -34,8 +34,8 @@ const Dashboard = () => {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Failed to load dashboard</h2>
-          <p className="text-gray-500 mb-4">{error?.message || "Something went wrong"}</p>
+          <h2 className="text-xl font-semibold mb-2">Couldn't load your dashboard</h2>
+          <p className="text-gray-500 mb-4">We're having trouble fetching your data right now. Please try again in a moment.</p>
           <button
             onClick={() => window.location.reload()}
             className="px-6 py-2 bg-green-700 text-white rounded-xl hover:bg-green-800"

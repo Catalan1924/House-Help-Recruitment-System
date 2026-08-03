@@ -22,15 +22,21 @@ ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 
 
 -- Helper: read current user's role without triggering RLS
--- (avoids infinite recursion in policies on "profiles")
+-- Uses LANGUAGE plpgsql (NOT sql) — plpgsql prevents PostgreSQL from
+-- inlining the function body, so SECURITY DEFINER actually takes effect
+-- and the function runs as superuser, bypassing RLS automatically.
 CREATE OR REPLACE FUNCTION public.current_user_role()
 RETURNS public.user_role
-LANGUAGE sql
+LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = 'public'
-STABLE
 AS $$
-  SELECT role FROM public.profiles WHERE id = auth.uid();
+DECLARE
+  result_role public.user_role;
+BEGIN
+  SELECT role INTO result_role FROM public.profiles WHERE id = auth.uid();
+  RETURN result_role;
+END;
 $$;
 
 -- ============================================================

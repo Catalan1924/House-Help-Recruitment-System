@@ -4,9 +4,11 @@ import {
   MessageCircle,
   Moon,
   ChevronDown,
-  Loader2,
+  User,
+  Settings,
+  LogOut,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useUnreadCount } from "../../hooks/useNotifications";
@@ -26,9 +28,11 @@ const getGreeting = () => {
 
 const Topbar = () => {
   const navigate = useNavigate();
-  const { user, userRole } = useAuth();
+  const { user, userRole, signOut } = useAuth();
   const { data: unreadCount, isLoading: countLoading } = useUnreadCount(user?.id);
   const [theme, setTheme] = useState("light");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const displayName =
     user?.user_metadata?.full_name ||
@@ -37,6 +41,19 @@ const Topbar = () => {
 
   const roleLabel = roleLabels[userRole] || "User";
   const avatarUrl = user?.user_metadata?.avatar_url || null;
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    if (dropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [dropdownOpen]);
 
   const handleMessages = () => {
     if (user && userRole) {
@@ -59,6 +76,39 @@ const Topbar = () => {
     setTheme(nextTheme);
     document.documentElement.classList.toggle("dark", nextTheme === "dark");
   };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/", { replace: true });
+  };
+
+  const dropdownItems = [
+    {
+      label: "Profile",
+      icon: User,
+      action: () => {
+        setDropdownOpen(false);
+        navigate(`/${userRole}/profile`);
+      },
+    },
+    {
+      label: "Settings",
+      icon: Settings,
+      action: () => {
+        setDropdownOpen(false);
+        navigate(`/${userRole}/settings`);
+      },
+    },
+    {
+      label: "Logout",
+      icon: LogOut,
+      action: () => {
+        setDropdownOpen(false);
+        handleLogout();
+      },
+      danger: true,
+    },
+  ];
 
   return (
     <header className="bg-white border-b h-20 px-8 flex items-center justify-between">
@@ -100,25 +150,57 @@ const Topbar = () => {
           <Moon />
         </button>
 
-        <div className="flex items-center gap-3 cursor-pointer">
-          {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={displayName}
-              className="w-12 h-12 rounded-full object-cover"
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => setDropdownOpen((prev) => !prev)}
+            className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-xl p-2 transition"
+          >
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt={displayName}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-green-700 text-white flex items-center justify-center font-bold text-lg">
+                {displayName.charAt(0).toUpperCase()}
+              </div>
+            )}
+
+            <div className="text-left">
+              <h3 className="font-semibold">{displayName}</h3>
+              <p className="text-sm text-gray-500">{roleLabel}</p>
+            </div>
+
+            <ChevronDown
+              className={`transition-transform duration-200 ${
+                dropdownOpen ? "rotate-180" : ""
+              }`}
             />
-          ) : (
-            <div className="w-12 h-12 rounded-full bg-green-700 text-white flex items-center justify-center font-bold text-lg">
-              {displayName.charAt(0).toUpperCase()}
+          </button>
+
+          {/* Dropdown menu */}
+          {dropdownOpen && (
+            <div className="absolute right-0 top-full mt-2 w-56 bg-white border rounded-xl shadow-lg z-50 py-2 animate-in fade-in slide-in-from-top-2 duration-150">
+              {dropdownItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.label}
+                    onClick={item.action}
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition hover:bg-gray-50 ${
+                      item.danger
+                        ? "text-red-600 hover:bg-red-50"
+                        : "text-gray-700"
+                    }`}
+                  >
+                    <Icon size={18} />
+                    {item.label}
+                  </button>
+                );
+              })}
             </div>
           )}
-
-          <div>
-            <h3 className="font-semibold">{displayName}</h3>
-            <p className="text-sm text-gray-500">{roleLabel}</p>
-          </div>
-
-          <ChevronDown />
         </div>
       </div>
     </header>

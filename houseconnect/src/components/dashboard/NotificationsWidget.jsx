@@ -21,7 +21,7 @@ const NotificationsWidget = () => {
       )}
 
       {isError && (
-        <p className="text-red-500 text-center py-4">Failed to load notifications.</p>
+        <p className="text-gray-500 text-center py-8 text-sm">Couldn't load notifications right now.</p>
       )}
 
       {!isLoading && !isError && notifications?.length === 0 && (

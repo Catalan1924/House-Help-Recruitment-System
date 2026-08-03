@@ -7,15 +7,20 @@
 -- ============================================================
 
 -- 1. Helper function — reads current user's role, bypasses RLS
+--    Uses plpgsql (NOT sql) so SECURITY DEFINER actually works.
 -- ------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.current_user_role()
 RETURNS public.user_role
-LANGUAGE sql
+LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = 'public'
-STABLE
 AS $$
-  SELECT role FROM public.profiles WHERE id = auth.uid();
+DECLARE
+  result_role public.user_role;
+BEGIN
+  SELECT role INTO result_role FROM public.profiles WHERE id = auth.uid();
+  RETURN result_role;
+END;
 $$;
 
 -- 2. Fix "Admins can view all profiles" — was self-referencing

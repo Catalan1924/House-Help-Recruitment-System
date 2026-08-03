@@ -1,10 +1,24 @@
 import { supabase } from "../lib/supabase";
 
+/**
+ * Helper: batch-fetch employer profiles for a list of jobs
+ * and stitch them into each job object.
+ */
+const stitchEmployers = async (jobs) => {
+  if (!jobs?.length) return jobs;
+  const employerIds = [...new Set(jobs.map((j) => j.employer_id))];
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, full_name, county")
+    .in("id", employerIds);
+  const profileMap = Object.fromEntries((profiles || []).map((p) => [p.id, p]));
+  return jobs.map((j) => ({ ...j, employer: profileMap[j.employer_id] || null }));
+};
 
 export const getJobs = async (filters = {}) => {
   let query = supabase
     .from("jobs")
-    .select("*, employer:employer_id(full_name, county)")
+    .select("*")
     .order("created_at", { ascending: false });
 
   if (filters.county) {
@@ -32,21 +46,30 @@ export const getJobs = async (filters = {}) => {
 
   const { data, error } = await query;
   if (error) throw error;
-  return data;
+  return stitchEmployers(data);
 };
 
 /**
  * Get a single job by ID, including employer profile.
  */
 export const getJobById = async (id) => {
-  const { data, error } = await supabase
+  const { data: job, error } = await supabase
     .from("jobs")
-    .select("*, employer:employer_id(*)")
+    .select("*")
     .eq("id", id)
     .single();
 
   if (error) throw error;
-  return data;
+  if (!job) return null;
+
+  // Fetch employer profile separately
+  const { data: employer } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", job.employer_id)
+    .single();
+
+  return { ...job, employer: employer || null };
 };
 
 /**
@@ -146,7 +169,7 @@ export const getEmployerJobs = async (employerId) => {
 export const getRecommendedJobs = async (county, limit = 6) => {
   let query = supabase
     .from("jobs")
-    .select("*, employer:employer_id(full_name, county)")
+    .select("*")
     .eq("status", "open")
     .order("created_at", { ascending: false })
     .limit(limit);
@@ -157,5 +180,5 @@ export const getRecommendedJobs = async (county, limit = 6) => {
 
   const { data, error } = await query;
   if (error) throw error;
-  return data;
+  return stitchEmployers(data);
 };

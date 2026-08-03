@@ -47,28 +47,28 @@ CREATE TRIGGER on_auth_user_created
 
 -- ------------------------------------------------------------
 -- 1.1 Helper functions for RLS checks
+--    SECURITY DEFINER + plpgsql (not inlined) = runs as superuser
+--    = RLS is bypassed automatically. No SET LOCAL needed.
 -- ------------------------------------------------------------
 CREATE OR REPLACE FUNCTION has_applied_to_job(job_uuid UUID, user_uuid UUID)
 RETURNS BOOLEAN AS $$
 BEGIN
-  SET LOCAL row_level_security = off;
   RETURN EXISTS (
     SELECT 1 FROM applications
     WHERE job_id = job_uuid AND worker_id = user_uuid
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 CREATE OR REPLACE FUNCTION is_job_owned_by_user(job_uuid UUID, user_uuid UUID)
 RETURNS BOOLEAN AS $$
 DECLARE
   owner_uuid UUID;
 BEGIN
-  SET LOCAL row_level_security = off;
   SELECT employer_id INTO owner_uuid FROM jobs WHERE id = job_uuid;
   RETURN owner_uuid = user_uuid;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 
 -- ------------------------------------------------------------
@@ -385,7 +385,9 @@ $$ LANGUAGE plpgsql;
 -- ------------------------------------------------------------
 -- 10. Get dashboard stats for admin
 -- ------------------------------------------------------------
-CREATE OR REPLACE FUNCTION get_admin_stats()
+DROP FUNCTION IF EXISTS public.get_admin_stats();
+
+CREATE FUNCTION public.get_admin_stats()
 RETURNS JSON AS $$
 DECLARE
   total_users INTEGER;
@@ -411,7 +413,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- ------------------------------------------------------------
 -- 11. Get dashboard stats for employer
 -- ------------------------------------------------------------
-CREATE OR REPLACE FUNCTION get_employer_stats(employer_id UUID)
+DROP FUNCTION IF EXISTS public.get_employer_stats(uuid);
+
+CREATE FUNCTION public.get_employer_stats(employer_id UUID)
 RETURNS JSON AS $$
 DECLARE
   active_jobs_count INTEGER;
@@ -437,7 +441,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- ------------------------------------------------------------
 -- 12. Get dashboard stats for worker
 -- ------------------------------------------------------------
-CREATE OR REPLACE FUNCTION get_worker_stats(worker_id UUID)
+DROP FUNCTION IF EXISTS public.get_worker_stats(uuid);
+
+CREATE FUNCTION public.get_worker_stats(worker_id UUID)
 RETURNS JSON AS $$
 DECLARE
   available_jobs INTEGER;
