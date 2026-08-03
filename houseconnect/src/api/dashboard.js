@@ -41,14 +41,27 @@ export const getWorkerStats = async (workerId) => {
  * Fetch recent emergency alerts (admin).
  */
 export const getEmergencyAlerts = async (limit = 10) => {
-  const { data, error } = await supabase
+  const { data: alerts, error } = await supabase
     .from("emergency_alerts")
-    .select("*, user:user_id(full_name, phone, county)")
+    .select("*")
     .order("created_at", { ascending: false })
     .limit(limit);
 
   if (error) throw error;
-  return data;
+  if (!alerts?.length) return [];
+
+  // Batch fetch user profiles
+  const userIds = [...new Set(alerts.map((a) => a.user_id))];
+  const { data: users } = await supabase
+    .from("profiles")
+    .select("id, full_name, phone, county")
+    .in("id", userIds);
+  const userMap = Object.fromEntries((users || []).map((u) => [u.id, u]));
+
+  return alerts.map((alert) => ({
+    ...alert,
+    user: userMap[alert.user_id] || null,
+  }));
 };
 
 /**
