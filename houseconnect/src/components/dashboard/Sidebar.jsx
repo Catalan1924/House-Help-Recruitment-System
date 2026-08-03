@@ -46,9 +46,9 @@ const menuConfig = {
   admin: [
     { title: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
     { title: "Users", icon: Users, path: "/admin/users" },
-    { title: "Verifications", icon: CheckCircle, path: "/admin/verification" },
-    { title: "Emergencies", icon: AlertTriangle, path: "/admin/alerts" },
-    { title: "Analytics", icon: BarChart3, path: "/admin/reports" },
+    { title: "Verifications", icon: CheckCircle, path: "/admin/verification-queue" },
+    { title: "Emergencies", icon: AlertTriangle, path: "/admin/emergency-alerts" },
+    { title: "Analytics", icon: BarChart3, path: "/admin/analytics" },
     { title: "Feedback", icon: MessageSquare, path: "/admin/feedback" },
     { title: "Settings", icon: Settings, path: "/admin/settings" },
   ],
