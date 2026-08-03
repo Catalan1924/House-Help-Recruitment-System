@@ -13,6 +13,7 @@ import Messages from "../src/pages/Employer/Messages";
 import Settings from "../src/pages/Employer/Settings";
 import Payments from "../src/pages/Employer/Payments";
 import Workers from "../src/pages/Employer/Workers";
+import JobDetail from "../src/pages/Employer/JobDetail";
 
 const EmployerRoutes = () => (
   <Route
@@ -34,6 +35,7 @@ const EmployerRoutes = () => (
     <Route path="settings" element={<Settings />} />
     <Route path="payments" element={<Payments />} />
     <Route path="workers" element={<Workers />} />
+    <Route path="jobs/:id" element={<JobDetail />} />
   </Route>
 );
 
