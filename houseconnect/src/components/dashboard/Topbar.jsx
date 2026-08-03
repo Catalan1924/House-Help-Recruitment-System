@@ -7,6 +7,7 @@ import {
   User,
   Settings,
   LogOut,
+
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -201,6 +202,12 @@ const Topbar = () => {
               })}
             </div>
           )}
+
+          <div>
+            <h3 className="font-semibold">{displayName}</h3>
+            <p className="text-sm text-gray-500">{roleLabel}</p>
+          </div>
+
         </div>
       </div>
     </header>
