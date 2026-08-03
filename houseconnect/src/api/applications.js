@@ -21,17 +21,30 @@ export const applyToJob = async (jobId, workerId, applicationData) => {
 
 /**
  * Get all applications for the current worker.
- * Uses flat select + batch lookup to avoid PostgREST FK embedding issues.
+ * Uses flat select + batch job lookup to avoid PostgREST FK embedding issues.
  */
 export const getMyApplications = async (workerId) => {
   const { data: apps, error } = await supabase
     .from("applications")
-    .select("*, job:job_id(*)")
+    .select("id, job_id, worker_id, cover_letter, status, created_at, updated_at")
     .eq("worker_id", workerId)
     .order("created_at", { ascending: false });
 
   if (error) throw error;
-  return apps;
+  if (!apps?.length) return [];
+
+  // Batch fetch all referenced jobs
+  const jobIds = [...new Set(apps.map((a) => a.job_id))];
+  const { data: jobs } = await supabase
+    .from("jobs")
+    .select("*")
+    .in("id", jobIds);
+  const jobMap = Object.fromEntries((jobs || []).map((j) => [j.id, j]));
+
+  return apps.map((app) => ({
+    ...app,
+    job: jobMap[app.job_id] || null,
+  }));
 };
 
 /**
