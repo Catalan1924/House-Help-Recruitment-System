@@ -3,8 +3,7 @@ import {
   Search,
   MessageCircle,
   Moon,
-  ChevronDown,
-  Loader2,
+
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -118,7 +117,6 @@ const Topbar = () => {
             <p className="text-sm text-gray-500">{roleLabel}</p>
           </div>
 
-          <ChevronDown />
         </div>
       </div>
     </header>
